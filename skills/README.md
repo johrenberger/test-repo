@@ -117,11 +117,39 @@ The next layer: skills that move a task from "we know the repo" to
 "the change is implemented, tested, and ready for review." They all
 build on the Foundation Skills.
 
+Implementation work is **routed**, not broad. A single
+implementation skill owns exactly one layer (backend, frontend,
+integration). Mixed or unclear tasks go through the orchestrator
+first; the orchestrator decides the right narrower skill.
+
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
+| [`implementation-orchestrator`](implementation-orchestrator/SKILL.md) | Route implementation work to the correct narrower skill; never edits code | `draft` |
+| [`backend-implementation`](backend-implementation/SKILL.md) | Implement **backend / server-side** behavior (API, service, persistence, auth) | `draft` |
+| [`frontend-implementation`](frontend-implementation/SKILL.md) | Implement **frontend / client-side** behavior (UI, state, forms, routing) | `draft` |
+| [`integration-implementation`](integration-implementation/SKILL.md) | Implement **cross-system integration** behavior (API clients, webhooks, queues, file batch) | `draft` |
 | [`test-gap-analysis`](test-gap-analysis/SKILL.md) | Risk-weighted test gap analysis without writing tests | `draft` |
 | [`test-generation`](test-generation/SKILL.md) | Generate or update tests in the existing framework and style | `draft` |
-| [`backend-implementation`](backend-implementation/SKILL.md) | Implement backend behavior safely using repo evidence and tests | `draft` |
+
+### When to use the orchestrator
+
+Use [`implementation-orchestrator`](implementation-orchestrator/SKILL.md)
+when a task asks to implement software behavior **and** any of:
+
+- The impacted layer (backend / frontend / integration) is unclear.
+- The task description mentions multiple layers.
+- The change touches modules owned by different teams.
+
+Use the narrower implementation skill directly when ownership is
+obvious:
+
+- **Clearly backend-only** → `backend-implementation`
+- **Clearly frontend-only** → `frontend-implementation`
+- **Clearly integration-only** → `integration-implementation`
+
+The narrower skills stop and route back to the orchestrator when
+the task crosses into another layer or needs a review gate
+(migration, dependency change, security-sensitive work).
 
 ## Review and Risk Skills
 

@@ -53,7 +53,10 @@ groups.
 ### [`SOFTWARE_ENGINEER_AGENT.md`](SOFTWARE_ENGINEER_AGENT.md)
 
 - [`repo-discovery`](../skills/repo-discovery/SKILL.md)
+- [`implementation-orchestrator`](../skills/implementation-orchestrator/SKILL.md)
 - [`backend-implementation`](../skills/backend-implementation/SKILL.md)
+- [`frontend-implementation`](../skills/frontend-implementation/SKILL.md)
+- [`integration-implementation`](../skills/integration-implementation/SKILL.md)
 - [`test-generation`](../skills/test-generation/SKILL.md)
 - [`validation-runner`](../skills/validation-runner/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
@@ -63,6 +66,7 @@ groups.
 - [`repo-discovery`](../skills/repo-discovery/SKILL.md)
 - [`test-gap-analysis`](../skills/test-gap-analysis/SKILL.md)
 - [`test-generation`](../skills/test-generation/SKILL.md)
+- [`implementation-orchestrator`](../skills/implementation-orchestrator/SKILL.md)
 - [`validation-runner`](../skills/validation-runner/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
 
@@ -98,6 +102,7 @@ groups.
 ### [`PROJECT_COORDINATOR_AGENT.md`](PROJECT_COORDINATOR_AGENT.md)
 
 - [`task-state-management`](../skills/task-state-management/SKILL.md)
+- [`implementation-orchestrator`](../skills/implementation-orchestrator/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
 
 See `../skills/README.md` for the full skill index, required
