@@ -68,7 +68,10 @@ that arises when multiple agents touch the same task across sessions.
    rollback), append a decision entry from `templates/decision-log.md`
    under `decisions/`. Decisions are append-only.
 7. Transitions are validated against the table below. An invalid transition
-   is an error: surface it, do not silently coerce.
+   is an error: surface it, do not silently coerce. Use
+   `scripts/transition.py <state.json> <to_state> --by <agent> --reason <text>`
+   to perform a transition; the script enforces the allowed-transitions
+   table, the blocker-file invariants, and the skip-state rule below.
 
 ## Allowed states
 
@@ -89,10 +92,13 @@ that arises when multiple agents touch the same task across sessions.
 
 ## Allowed transitions
 
-- `backlog → ready | closed`
-- `ready → in_progress | backlog | closed`
+Sequential transitions (next-state in the forward path, or one
+of the listed rework/rollback targets):
+
+- `backlog → ready`
+- `ready → in_progress | backlog` (backlog = rescope and deprioritize)
 - `in_progress → implementation_done | blocked | ready`
-- `blocked → in_progress | ready | closed` (only after blocker resolved)
+- `blocked → in_progress | ready` (only after blocker resolved)
 - `implementation_done → review_done | in_progress` (rework)
 - `review_done → testing_done | implementation_done` (rework)
 - `testing_done → security_done | implementation_done` (rework)
@@ -101,14 +107,52 @@ that arises when multiple agents touch the same task across sessions.
 - `deployed → verified | release_ready` (rollback)
 - `verified → closed | deployed` (post-verification regression)
 
-Any transition not listed is **invalid** and must be rejected with a clear
-error referencing this table.
+Terminal transitions to `closed` (allowed from any state, but
+each requires a justification — see "Skip-state rule" below):
+
+- `backlog → closed` (cancelled before pickup)
+- `ready → closed` (deprioritized after scoping)
+- `blocked → closed` (abandoned; blocker cannot be resolved)
+- `in_progress → closed` (abandoned mid-flight; requires decision)
+- `implementation_done → closed` (skipped review/test; requires decision)
+- `review_done → closed` (skipped test/security; requires decision)
+- `testing_done → closed` (skipped security/release; requires decision)
+- `security_done → closed` (skipped release/deploy; requires decision)
+- `release_ready → closed` (deployment cancelled; requires decision)
+- `deployed → closed` (post-deploy validation skipped; requires decision)
+- `verified → closed` (standard terminal transition)
+
+### Skip-state rule
+
+Any transition that **skips one or more forward states** to
+reach `closed` (e.g. `testing_done → closed` skipping
+`security_done`, `release_ready`, `deployed`, `verified`) is
+permitted **only when** there is a `decisions/<id>.md` entry
+that:
+
+- has `Status: accepted`
+- names the skipped states explicitly
+- explains why the skip is safe (e.g. "docs-only change; no
+  security, release, or deploy activity applies")
+- is dated **before or at** the transition's `at` timestamp
+
+The validator MUST reject the transition if no such decision
+entry exists, with an error message naming the required
+`decisions/` filename pattern (`decisions/<id>-skip-to-closed.md`).
+
+A transition that walks the full forward path (`verified → closed`)
+does **not** require a skip-state decision; it is the normal
+terminal.
+
+Any transition not listed above is **invalid** and must be
+rejected with a clear error referencing this table.
 
 ## Forbidden Actions
 
 - Deleting or rewriting history entries in `state.json` or `decisions/`.
-- Skipping a state in the forward direction without justification
-  (justification = an explicit decision-log entry).
+- Skipping a state in the forward direction to reach `closed`
+  without a `decisions/<id>.md` entry that names the skipped
+  states (see "Skip-state rule" above).
 - Moving out of `blocked` without first creating a resolution note in the
   originating blocker file.
 - Editing a task owned by another agent without a `handoff-packet` to the
@@ -151,6 +195,13 @@ Receiving agents must not rely on:
 - The most recent `history` entry's `to` field equals `current_state`.
 - Every `from → to` pair in `history` is an allowed transition.
 - Every open blocker has at least one owner field set.
+- Every history entry that transitions to `closed` from a
+  non-terminal state (i.e. not from `verified` or `backlog`)
+  is preceded by a `decisions/<id>.md` entry dated no later
+  than the transition's `at` timestamp, with status `accepted`
+  and content that names the skipped states.
+- `history` is append-only: every entry's `at` is greater than
+  or equal to the previous entry's `at`.
 
 ## Completion Criteria
 
@@ -158,3 +209,25 @@ Receiving agents must not rely on:
 - Any required templates are filled, not left as placeholders.
 - The agent that triggered the change emits a one-line confirmation
   including the new state.
+
+## Helper scripts
+
+This skill ships with two reference implementations in
+`scripts/`. They are not the only way to perform these actions,
+but they are the canonical validators.
+
+- `scripts/transition.py <state.json> <to_state> --by <agent> --reason <text>`
+  performs a state transition. Validates the allowed-transitions
+  table, the blocked-state invariants (open blocker file on
+  enter, resolution note on exit), and the skip-state rule
+  (above). Exits 0 on success, 2 on validation failure.
+
+- `scripts/lint-task-state.py [workspace_root]`
+  checks every `tsm-s*` (or `<workspace_root>`) task workspace
+  against the Validation section above. Exits 0 if all pass,
+  1 if any fail. Use as a CI gate on changes to `state.json` or
+  this `SKILL.md`.
+
+Both scripts are read-only with respect to git: they do not
+commit, push, or merge. They are safe to run in any
+environment.
