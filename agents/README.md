@@ -59,6 +59,8 @@ groups.
 - [`integration-implementation`](../skills/integration-implementation/SKILL.md)
 - [`test-generation`](../skills/test-generation/SKILL.md)
 - [`validation-runner`](../skills/validation-runner/SKILL.md)
+- [`architecture-review`](../skills/architecture-review/SKILL.md)
+- [`documentation-update`](../skills/documentation-update/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
 
 ### [`TEST_AUTOMATION_AGENT.md`](TEST_AUTOMATION_AGENT.md)
@@ -74,8 +76,10 @@ groups.
 
 - [`code-change-review`](../skills/code-change-review/SKILL.md)
 - [`security-review`](../skills/security-review/SKILL.md)
+- [`architecture-review`](../skills/architecture-review/SKILL.md)
 - [`dependency-change-review`](../skills/dependency-change-review/SKILL.md)
 - [`database-migration-safety`](../skills/database-migration-safety/SKILL.md)
+- [`observability-review`](../skills/observability-review/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
 
 ### [`SECURITY_ANALYST_AGENT.md`](SECURITY_ANALYST_AGENT.md)
@@ -85,9 +89,18 @@ groups.
 - [`database-migration-safety`](../skills/database-migration-safety/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
 
+### [`DOCUMENTATION_AGENT.md`](DOCUMENTATION_AGENT.md)
+
+- [`repo-discovery`](../skills/repo-discovery/SKILL.md)
+- [`documentation-update`](../skills/documentation-update/SKILL.md)
+- [`runbook-authoring`](../skills/runbook-authoring/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
 ### [`ARCHITECT_AGENT.md`](ARCHITECT_AGENT.md)
 
 - [`repo-discovery`](../skills/repo-discovery/SKILL.md)
+- [`architecture-decision`](../skills/architecture-decision/SKILL.md)
+- [`architecture-review`](../skills/architecture-review/SKILL.md)
 - [`database-migration-safety`](../skills/database-migration-safety/SKILL.md)
 - [`dependency-change-review`](../skills/dependency-change-review/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
@@ -96,14 +109,26 @@ groups.
 
 - [`repo-discovery`](../skills/repo-discovery/SKILL.md)
 - [`validation-runner`](../skills/validation-runner/SKILL.md)
+- [`release-readiness`](../skills/release-readiness/SKILL.md)
+- [`observability-review`](../skills/observability-review/SKILL.md)
+- [`runbook-authoring`](../skills/runbook-authoring/SKILL.md)
 - [`dependency-change-review`](../skills/dependency-change-review/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+### [`MONITORING_AGENT.md`](MONITORING_AGENT.md)
+
+- [`incident-triage`](../skills/incident-triage/SKILL.md)
+- [`observability-review`](../skills/observability-review/SKILL.md)
+- [`runbook-authoring`](../skills/runbook-authoring/SKILL.md)
+- [`release-readiness`](../skills/release-readiness/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
 
 ### [`PROJECT_COORDINATOR_AGENT.md`](PROJECT_COORDINATOR_AGENT.md)
 
 - [`task-state-management`](../skills/task-state-management/SKILL.md)
-- [`implementation-orchestrator`](../skills/implementation-orchestrator/SKILL.md)
 - [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+- [`release-readiness`](../skills/release-readiness/SKILL.md)
+- [`incident-triage`](../skills/incident-triage/SKILL.md)
 
 See `../skills/README.md` for the full skill index, required
 `SKILL.md` sections, maturity levels, and the non-destructive-script

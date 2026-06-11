@@ -67,7 +67,14 @@ constitute a deployable application.
 │   ├── frontend-implementation/  # implement frontend / client behavior safely
 │   ├── integration-implementation/  # implement cross-system integration behavior safely
 │   ├── dependency-change-review/  # review dependency/build/lockfile changes
-│   └── database-migration-safety/  # schema and migration safety review
+│   ├── database-migration-safety/  # schema and migration safety review
+│   ├── architecture-decision/   # evidence-based ADRs and options analyses
+│   ├── architecture-review/     # read-only audit of proposed/implemented architecture
+│   ├── documentation-update/    # update source-controlled docs based on evidence
+│   ├── release-readiness/       # go/no-go readiness report; never deploys
+│   ├── incident-triage/         # structure incident investigation; never executes
+│   ├── observability-review/    # audit logging/metrics/tracing/alerts/runbooks
+│   └── runbook-authoring/       # create/update runbooks from validated evidence
 └── templates/                # shared templates for review / risk skills
     ├── findings-severity.md  # severity scale and required finding fields
     ├── approval-gate.md      # approval record for blocker-level findings
@@ -137,14 +144,50 @@ This split improves OpenClaw / MiniMax reliability by:
   `integration-implementation` (all currently `draft`)
 - ✅ Review and risk skills exist: `code-change-review`,
   `security-review`, `dependency-change-review`,
-  `database-migration-safety` (all currently `draft`)
+  `database-migration-safety`, `architecture-review`,
+  `observability-review` (all currently `draft`)
+- ✅ Architecture and documentation skills exist: `architecture-decision`,
+  `architecture-review`, `documentation-update` (all currently
+  `draft`)
+- ✅ Release and operations skills exist: `release-readiness`,
+  `incident-triage`, `observability-review`, `runbook-authoring` (all
+  currently `draft`)
 - ✅ Shared templates exist: `findings-severity`, `approval-gate`,
-  `risk-register`
+  `risk-register`, `adr-index`, `go-no-go-summary`,
+  `incident-summary`, `operational-risk-register`
 - 🟡 No CI / validation pipeline yet (open question: should specs be
   linted, scripts gated by `bash -n`, and required `SKILL.md` sections
   checked in CI?)
 - 🟡 All skills are `draft` maturity — promotion to `usable` requires at
   least one end-to-end run with a captured handoff packet
+
+## Safety contract for release and operations skills
+
+Release, incident, observability, and runbook skills are
+**advisory / review / coordination by default.** They must
+not:
+
+- deploy,
+- rollback,
+- restart production services,
+- rotate secrets,
+- change firewall rules,
+- or modify infrastructure
+
+without explicit operator approval. The skills produce
+reports, recommendations, and handoffs; the operator (human
+or automated under operator control) makes the production
+change.
+
+This contract is restated in each of those skills'
+`Forbidden Actions` sections.
+
+## What this repo contains
+
+This repo contains **agent specs, skill specs, templates,
+references, and safe helper scripts.** It does not contain
+the OpenClaw runtime, production application code, or
+external runtime dependencies.
 
 This repo contains **agent specs, skill specs, templates, and safe
 helper scripts**. It does not contain the OpenClaw runtime.

@@ -66,17 +66,18 @@ least one successful end-to-end run with a captured handoff packet.
 
 ## Cross-skill composition rules
 
-The new software-delivery skills build on the foundation skills.
-By convention, every action-oriented skill must:
+The skills build on the foundation skills. By convention,
+**every** skill (not just action-oriented ones) must:
 
-- **Use `repo-discovery` before acting** unless a current discovery
-  artifact already exists in the task workspace. Inventing repo
-  facts is forbidden.
-- **Use `handoff-packet` for any work passed to another agent.**
-  Vague handoffs are rejected. The packet must include the 14
-  required fields.
-- **Use `validation-runner` (or explain why validation could not be
-  run) for any change that should be validated.** Hand-waving
+- **Use `repo-discovery` before acting** unless a current
+  discovery artifact already exists in the task workspace.
+  Inventing repo facts is forbidden.
+- **Use `handoff-packet` for any work passed to another
+  agent.** Vague handoffs are rejected. The packet must
+  include the 14 required fields.
+- **Use `validation-runner` (or explain why validation
+  could not be run)** for any change that should be
+  validated. Hand-waving
   "should be fine" is forbidden.
 
 A skill that depends on another skill's output must read the
@@ -163,6 +164,77 @@ ranked findings reports.
 | [`security-review`](security-review/SKILL.md) | Code / config security review with OWASP, secrets, and authz checklists | `draft` |
 | [`dependency-change-review`](dependency-change-review/SKILL.md) | Review of dependency, build, and lockfile changes | `draft` |
 | [`database-migration-safety`](database-migration-safety/SKILL.md) | Schema and migration safety review with expand-and-contract guidance | `draft` |
+| [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture; may recommend an ADR | `draft` |
+| [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, health, alerts, runbooks; recommends changes via handoff | `draft` |
+
+## Architecture and Documentation Skills
+
+Skills that make decisions, formalize them as ADRs, and keep
+documentation aligned with the actual repo. They are
+**evidence-driven** — every artifact cites the source.
+
+- [`architecture-decision`](architecture-decision/SKILL.md) creates
+  evidence-based ADRs and options analyses. Material decisions get
+  an ADR; rejected common patterns (microservices, event
+  sourcing, CQRS, service mesh, queues, caches, sharding) must
+  be explicitly explained.
+- [`architecture-review`](architecture-review/SKILL.md) audits a
+  proposed or implemented architecture across 13 dimensions
+  (alignment, boundaries, coupling, data ownership, contract
+  stability, failure modes, scalability, security,
+  observability, deployment, reversibility, migration,
+  over-engineering) and may recommend that an ADR be created
+  (via `architecture-decision`).
+- [`documentation-update`](documentation-update/SKILL.md) updates
+  source-controlled docs based on code, API, architecture, and
+  config changes. It always produces a documentation impact
+  report, even when no docs are changed.
+
+| Skill | Purpose | Maturity |
+| --- | --- | --- |
+| [`architecture-decision`](architecture-decision/SKILL.md) | Create evidence-based ADRs and options analyses for material technical decisions | `draft` |
+| [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `draft` |
+| [`documentation-update`](documentation-update/SKILL.md) | Update source-controlled docs based on code, API, architecture, and config changes | `draft` |
+
+## Release and Operations Skills
+
+Skills that coordinate release readiness, incident response,
+and operational artifacts. **All of these are advisory /
+review / coordination by default.** They do not deploy, do
+not rollback, do not restart production services, do not
+rotate secrets, do not change firewall rules, do not modify
+infrastructure. Those actions are operator-only.
+
+- [`release-readiness`](release-readiness/SKILL.md) aggregates
+  evidence from validation, code review, security review,
+  dependency review, migration safety, architecture review, and
+  documentation update to produce a go / no-go readiness
+  report. It is the **last stop before deployment**, not a
+  replacement for the individual review skills. The status is
+  one of `Ready | Ready with known risks | Not ready | Blocked
+  pending approval / evidence`.
+- [`incident-triage`](incident-triage/SKILL.md) structures
+  incident investigation and response without making unsafe
+  production changes. It produces a triage report, a timeline,
+  action items, and a handoff to the appropriate role
+  (Monitoring, DevOps, Security, Software Engineer, Project
+  Coordinator). It does not execute mitigations.
+- [`observability-review`](observability-review/SKILL.md) audits
+  whether a service / change has adequate logging, metrics,
+  tracing, health checks, and alert / runbook support. It is
+  read-only; alert / dashboard / SLO changes are routed via
+  handoff to `MONITORING_AGENT`.
+- [`runbook-authoring`](runbook-authoring/SKILL.md) creates or
+  updates operational runbooks and troubleshooting guides from
+  validated system evidence. Destructive remediation steps
+  require an explicit approval gate and a rollback step.
+
+| Skill | Purpose | Maturity |
+| --- | --- | --- |
+| [`release-readiness`](release-readiness/SKILL.md) | Aggregate evidence into a go / no-go readiness report; never deploys | `draft` |
+| [`incident-triage`](incident-triage/SKILL.md) | Structure incident investigation; never executes production changes | `draft` |
+| [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `draft` |
+| [`runbook-authoring`](runbook-authoring/SKILL.md) | Create / update operational runbooks from validated evidence; gates destructive steps | `draft` |
 
 ## Future Skills
 
@@ -178,14 +250,19 @@ Candidates:
 - `feature-flag-rollout` — phased rollout / kill-switch workflow
 - `release-notes-generation` — produce release notes from merged
   PRs / commit history
-- `runbook-authoring` — capture operational procedures from
-  observed actions
-- `architecture-decision-record` — ADR authoring and review
+- `slo-authoring` — author SLOs / SLIs from scratch (vs.
+  reviewing them in `observability-review`)
+- `chaos-experiment-authoring` — design chaos / failure-injection
+  experiments from observed failure modes
+- `cost-review` — review cloud / runtime cost impact of changes
+- `compliance-evidence` — collect evidence for SOC2 / ISO27001 /
+  HIPAA / PCI from existing artifacts
 
 ## Shared templates (used by multiple skills)
 
-Generic templates that multiple review / risk skills consume. They
-live at the repo root in `../templates/`.
+Generic templates that multiple review / risk / decision /
+release / operations skills consume. They live at the repo
+root in `../templates/`.
 
 - [`../templates/findings-severity.md`](../templates/findings-severity.md) —
   severity scale and required finding fields
@@ -193,6 +270,15 @@ live at the repo root in `../templates/`.
   approval record for blocker-level findings
 - [`../templates/risk-register.md`](../templates/risk-register.md) —
   consolidated, cross-skill view of risk for a task
+- [`../templates/adr-index.md`](../templates/adr-index.md) —
+  index of ADRs (active, superseded, rejected, open proposals)
+- [`../templates/go-no-go-summary.md`](../templates/go-no-go-summary.md) —
+  one-page go / no-go summary for a release
+- [`../templates/incident-summary.md`](../templates/incident-summary.md) —
+  one-page incident summary for stakeholders
+- [`../templates/operational-risk-register.md`](../templates/operational-risk-register.md) —
+  consolidated cross-skill view of operational risk
+  (observability, runbook, release, incident)
 
 ## Difference from agents
 
