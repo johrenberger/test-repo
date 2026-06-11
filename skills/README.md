@@ -130,7 +130,7 @@ first; the orchestrator decides the right narrower skill.
 | [`frontend-implementation`](frontend-implementation/SKILL.md) | Implement **frontend / client-side** behavior (UI, state, forms, routing) | `draft` |
 | [`integration-implementation`](integration-implementation/SKILL.md) | Implement **cross-system integration** behavior (API clients, webhooks, queues, file batch) | `draft` |
 | [`test-gap-analysis`](test-gap-analysis/SKILL.md) | Risk-weighted test gap analysis without writing tests | `draft` |
-| [`test-generation`](test-generation/SKILL.md) | Generate or update tests in the existing framework and style | `draft` |
+| [`test-generation`](test-generation/SKILL.md) | Generate or update tests in the existing framework and style | `usable` |
 
 ### When to use the orchestrator
 
