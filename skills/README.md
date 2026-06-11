@@ -109,7 +109,7 @@ touches code or task state should be familiar with these.
 | --- | --- | --- |
 | [`repo-discovery`](repo-discovery/SKILL.md) | Detect repo stack, layout, and test commands from filesystem evidence | `draft` |
 | [`task-state-management`](task-state-management/SKILL.md) | Per-task workspace layout, allowed states, state-transition rules | `draft` |
-| [`handoff-packet`](handoff-packet/SKILL.md) | Standardize agent-to-agent task transfers with a 14-field packet | `draft` |
+| [`handoff-packet`](handoff-packet/SKILL.md) | Standardize agent-to-agent task transfers with a 14-field packet | `usable` |
 | [`validation-runner`](validation-runner/SKILL.md) | Run safe, evidence-discovered local validation commands and report | `draft` |
 
 ## Software Delivery Skills
