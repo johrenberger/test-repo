@@ -39,6 +39,23 @@ agent spec — identity, purpose, core capabilities, and collaboration protocol.
 
 ---
 
+## Recommended Foundation Skills
+
+The following skills in `../skills/` are recommended for each engineering
+agent. Agents that own code or run validation should treat these as
+required companions to their spec; non-engineering agents may use them on
+demand.
+
+- **Project Coordinator** → [`task-state-management`](../skills/task-state-management/SKILL.md), [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+- **Software Engineer** → [`repo-discovery`](../skills/repo-discovery/SKILL.md), [`validation-runner`](../skills/validation-runner/SKILL.md), [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+- **Test Automation** → [`repo-discovery`](../skills/repo-discovery/SKILL.md), [`validation-runner`](../skills/validation-runner/SKILL.md)
+- **Code Review** → [`handoff-packet`](../skills/handoff-packet/SKILL.md), [`validation-runner`](../skills/validation-runner/SKILL.md)
+- **Security Analyst** → [`repo-discovery`](../skills/repo-discovery/SKILL.md), [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+- **DevOps** → [`validation-runner`](../skills/validation-runner/SKILL.md), [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+See `../skills/README.md` for the full skill index, required `SKILL.md`
+sections, maturity levels, and the non-destructive-script rule.
+
 ## Adding a new agent spec
 
 1. Create `agents/<ROLE>_AGENT.md` using the existing files as a template.

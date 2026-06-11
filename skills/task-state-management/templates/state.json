@@ -1,0 +1,17 @@
+{
+  "$schema": "https://example.invalid/schemas/task-state.v1.json",
+  "task_id": "<TASK_ID>",
+  "owner": "<AGENT_ID>",
+  "current_state": "backlog",
+  "created_at": "<ISO-8601 UTC>",
+  "updated_at": "<ISO-8601 UTC>",
+  "history": [
+    {
+      "from": null,
+      "to": "backlog",
+      "by": "<AGENT_ID>",
+      "at": "<ISO-8601 UTC>",
+      "reason": "task workspace initialized"
+    }
+  ]
+}
