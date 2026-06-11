@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# detect_validation_commands.sh — enumerate validation commands from
+# repo evidence. Read-only. Emits one line per detected command:
+#   <command_id>::<command_string>::<source_file>::<confidence>
+# Confidence: high (manifest declares), medium (convention), low (inferred).
+
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+  echo "usage: $0 <repo_root>" >&2
+  exit 64
+fi
+
+REPO_ROOT="$1"
+
+if [[ ! -d "$REPO_ROOT" ]]; then
+  echo "error: repo_root not a directory: $REPO_ROOT" >&2
+  exit 66
+fi
+
+emit() { printf '%s::%s::%s::%s\n' "$1" "$2" "$3" "$4"; }
+
+# Read a package.json script value without requiring jq.
+pkg_script() {
+  local name="$1"
+  awk -v target="$name" '
+    BEGIN { in_pkg=0; depth=0 }
+    /"scripts"[[:space:]]*:/ { in_pkg=1; next }
+    in_pkg && /}/ && depth==0 { in_pkg=0 }
+    in_pkg {
+      match($0, "[[:space:]]*\"" target "\"[[:space:]]*:[[:space:]]*\"[^\"]*\"")
+      if (RSTART > 0) {
+        s = substr($0, RSTART, RLENGTH)
+        sub("^[^:]*:[[:space:]]*\"", "", s)
+        sub("\"$", "", s)
+        print s
+        exit
+      }
+    }
+  ' "$REPO_ROOT/package.json" 2>/dev/null
+}
+
+# --- Node ---
+if [[ -f "$REPO_ROOT/package.json" ]]; then
+  if [[ -f "$REPO_ROOT/yarn.lock" ]]; then
+    emit "yarn_test" "yarn test" "yarn.lock" "high"
+  elif [[ -f "$REPO_ROOT/pnpm-lock.yaml" ]]; then
+    emit "pnpm_test" "pnpm test" "pnpm-lock.yaml" "high"
+  else
+    if s=$(pkg_script test);          then [[ -n "$s" ]] && emit "npm_test"     "npm test --if-present"      "package.json:test"     "high"; fi
+    if s=$(pkg_script lint);          then [[ -n "$s" ]] && emit "npm_lint"     "npm run lint --if-present"  "package.json:lint"     "high"; fi
+    if s=$(pkg_script typecheck) || s=$(pkg_script "type-check") || s=$(pkg_script tsc); then
+      [[ -n "$s" ]] && emit "npm_typecheck" "npm run typecheck --if-present" "package.json:typecheck" "high"
+    fi
+  fi
+fi
+
+# --- Java / Maven / Gradle ---
+if [[ -f "$REPO_ROOT/mvnw" ]]; then
+  emit "mvnw_test" "./mvnw test" "mvnw" "high"
+elif [[ -f "$REPO_ROOT/pom.xml" ]]; then
+  emit "mvn_test" "mvn test" "pom.xml" "medium"
+fi
+if [[ -f "$REPO_ROOT/gradlew" ]]; then
+  emit "gradlew_test" "./gradlew test" "gradlew" "high"
+elif [[ -f "$REPO_ROOT/build.gradle" || -f "$REPO_ROOT/build.gradle.kts" ]]; then
+  emit "gradle_test" "gradle test" "build.gradle" "medium"
+fi
+
+# --- Python ---
+if [[ -f "$REPO_ROOT/pyproject.toml" ]] && grep -q "pytest" "$REPO_ROOT/pyproject.toml" 2>/dev/null; then
+  emit "pytest" "pytest" "pyproject.toml" "high"
+elif [[ -f "$REPO_ROOT/pytest.ini" || -f "$REPO_ROOT/conftest.py" \
+      || -d "$REPO_ROOT/tests" || -d "$REPO_ROOT/test" ]]; then
+  emit "pytest" "pytest" "conftest.py" "medium"
+fi
+
+# --- Go ---
+[[ -f "$REPO_ROOT/go.mod" ]] && emit "go_test" "go test ./..." "go.mod" "high"
+
+# --- Rust ---
+[[ -f "$REPO_ROOT/Cargo.toml" ]] && emit "cargo_test" "cargo test" "Cargo.toml" "high"
+
+# --- .NET ---
+shopt -s nullglob
+for sln in "$REPO_ROOT"/*.sln; do
+  [[ -f "$sln" ]] && emit "dotnet_test" "dotnet test" "$(basename "$sln")" "high" && break
+done
+shopt -u nullglob
+
+# --- CI cross-check (informational) ---
+[[ -d "$REPO_ROOT/.github/workflows" ]] \
+  && emit "ci_workflows" "present" ".github/workflows" "high"
+
+exit 0
