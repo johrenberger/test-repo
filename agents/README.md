@@ -39,22 +39,70 @@ agent spec — identity, purpose, core capabilities, and collaboration protocol.
 
 ---
 
-## Recommended Foundation Skills
+## Recommended Skill Mapping
 
-The following skills in `../skills/` are recommended for each engineering
-agent. Agents that own code or run validation should treat these as
-required companions to their spec; non-engineering agents may use them on
-demand.
+The following skills in `../skills/` are recommended for each
+engineering agent. Agents that own code, run validation, or move
+work between agents should treat these as required companions to
+their spec. Non-engineering agents may use them on demand.
 
-- **Project Coordinator** → [`task-state-management`](../skills/task-state-management/SKILL.md), [`handoff-packet`](../skills/handoff-packet/SKILL.md)
-- **Software Engineer** → [`repo-discovery`](../skills/repo-discovery/SKILL.md), [`validation-runner`](../skills/validation-runner/SKILL.md), [`handoff-packet`](../skills/handoff-packet/SKILL.md)
-- **Test Automation** → [`repo-discovery`](../skills/repo-discovery/SKILL.md), [`validation-runner`](../skills/validation-runner/SKILL.md)
-- **Code Review** → [`handoff-packet`](../skills/handoff-packet/SKILL.md), [`validation-runner`](../skills/validation-runner/SKILL.md)
-- **Security Analyst** → [`repo-discovery`](../skills/repo-discovery/SKILL.md), [`handoff-packet`](../skills/handoff-packet/SKILL.md)
-- **DevOps** → [`validation-runner`](../skills/validation-runner/SKILL.md), [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+Skills are grouped in `../skills/README.md` into Foundation, Software
+Delivery, and Review and Risk. The mapping below picks from all
+groups.
 
-See `../skills/README.md` for the full skill index, required `SKILL.md`
-sections, maturity levels, and the non-destructive-script rule.
+### [`SOFTWARE_ENGINEER_AGENT.md`](SOFTWARE_ENGINEER_AGENT.md)
+
+- [`repo-discovery`](../skills/repo-discovery/SKILL.md)
+- [`backend-implementation`](../skills/backend-implementation/SKILL.md)
+- [`test-generation`](../skills/test-generation/SKILL.md)
+- [`validation-runner`](../skills/validation-runner/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+### [`TEST_AUTOMATION_AGENT.md`](TEST_AUTOMATION_AGENT.md)
+
+- [`repo-discovery`](../skills/repo-discovery/SKILL.md)
+- [`test-gap-analysis`](../skills/test-gap-analysis/SKILL.md)
+- [`test-generation`](../skills/test-generation/SKILL.md)
+- [`validation-runner`](../skills/validation-runner/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+### [`CODE_REVIEW_AGENT.md`](CODE_REVIEW_AGENT.md)
+
+- [`code-change-review`](../skills/code-change-review/SKILL.md)
+- [`security-review`](../skills/security-review/SKILL.md)
+- [`dependency-change-review`](../skills/dependency-change-review/SKILL.md)
+- [`database-migration-safety`](../skills/database-migration-safety/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+### [`SECURITY_ANALYST_AGENT.md`](SECURITY_ANALYST_AGENT.md)
+
+- [`security-review`](../skills/security-review/SKILL.md)
+- [`dependency-change-review`](../skills/dependency-change-review/SKILL.md)
+- [`database-migration-safety`](../skills/database-migration-safety/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+### [`ARCHITECT_AGENT.md`](ARCHITECT_AGENT.md)
+
+- [`repo-discovery`](../skills/repo-discovery/SKILL.md)
+- [`database-migration-safety`](../skills/database-migration-safety/SKILL.md)
+- [`dependency-change-review`](../skills/dependency-change-review/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+### [`DEVOPS_AGENT.md`](DEVOPS_AGENT.md)
+
+- [`repo-discovery`](../skills/repo-discovery/SKILL.md)
+- [`validation-runner`](../skills/validation-runner/SKILL.md)
+- [`dependency-change-review`](../skills/dependency-change-review/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+### [`PROJECT_COORDINATOR_AGENT.md`](PROJECT_COORDINATOR_AGENT.md)
+
+- [`task-state-management`](../skills/task-state-management/SKILL.md)
+- [`handoff-packet`](../skills/handoff-packet/SKILL.md)
+
+See `../skills/README.md` for the full skill index, required
+`SKILL.md` sections, maturity levels, and the non-destructive-script
+rule.
 
 ## Adding a new agent spec
 

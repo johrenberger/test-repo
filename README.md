@@ -52,18 +52,31 @@ constitute a deployable application.
 │   ├── SECURITY_ANALYST_AGENT.md
 │   ├── SOFTWARE_ENGINEER_AGENT.md
 │   └── TEST_AUTOMATION_AGENT.md
-└── skills/                   # skill specifications + helper artifacts
-    ├── README.md             # skill index, required sections, maturity
-    ├── repo-discovery/       # detect repo stack, layout, commands
-    ├── task-state-management/# per-task workspace + state transitions
-    ├── handoff-packet/       # agent-to-agent transfer packet
-    └── validation-runner/    # safe local validation runner
+├── skills/                   # skill specifications + helper artifacts
+│   ├── README.md             # skill index, required sections, maturity
+│   ├── repo-discovery/       # detect repo stack, layout, commands
+│   ├── task-state-management/# per-task workspace + state transitions
+│   ├── handoff-packet/       # agent-to-agent transfer packet
+│   ├── validation-runner/    # safe local validation runner
+│   ├── test-gap-analysis/    # risk-weighted test gap report
+│   ├── test-generation/      # generate tests in existing framework
+│   ├── code-change-review/   # read-only review of code changes
+│   ├── security-review/      # code/config security review
+│   ├── backend-implementation/# implement backend behavior safely
+│   ├── dependency-change-review/  # review dependency/build/lockfile changes
+│   └── database-migration-safety/  # schema and migration safety review
+└── templates/                # shared templates for review / risk skills
+    ├── findings-severity.md  # severity scale and required finding fields
+    ├── approval-gate.md      # approval record for blocker-level findings
+    └── risk-register.md      # consolidated cross-skill view of risk
 ```
 
 See [`agents/README.md`](agents/README.md) for the full agent index, grouped
 by domain (Engineering, Business Operations, Data & Research).
-See [`skills/README.md`](skills/README.md) for the skill index, required
-`SKILL.md` sections, maturity levels, and the non-destructive script rule.
+See [`skills/README.md`](skills/README.md) for the skill index, grouped
+into Foundation, Software Delivery, and Review and Risk skills, with
+required `SKILL.md` sections, maturity levels, and the non-destructive
+script rule.
 
 ## Conventions
 
@@ -78,7 +91,20 @@ See [`skills/README.md`](skills/README.md) for the skill index, required
 ## Status
 
 - ✅ 20 agent specs, all using the unified `*_AGENT.md` naming
-- ✅ Foundation skills added: `repo-discovery`, `task-state-management`,
+- ✅ Foundation skills exist: `repo-discovery`, `task-state-management`,
   `handoff-packet`, `validation-runner` (all currently `draft`)
+- ✅ Software delivery skills exist: `test-gap-analysis`,
+  `test-generation`, `backend-implementation` (all currently `draft`)
+- ✅ Review and risk skills exist: `code-change-review`,
+  `security-review`, `dependency-change-review`,
+  `database-migration-safety` (all currently `draft`)
+- ✅ Shared templates exist: `findings-severity`, `approval-gate`,
+  `risk-register`
 - 🟡 No CI / validation pipeline yet (open question: should specs be
-  linted and scripts gated by a CI check?)
+  linted, scripts gated by `bash -n`, and required `SKILL.md` sections
+  checked in CI?)
+- 🟡 All skills are `draft` maturity — promotion to `usable` requires at
+  least one end-to-end run with a captured handoff packet
+
+This repo contains **agent specs, skill specs, templates, and safe
+helper scripts**. It does not contain the OpenClaw runtime.
