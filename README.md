@@ -62,7 +62,10 @@ constitute a deployable application.
 │   ├── test-generation/      # generate tests in existing framework
 │   ├── code-change-review/   # read-only review of code changes
 │   ├── security-review/      # code/config security review
-│   ├── backend-implementation/# implement backend behavior safely
+│   ├── implementation-orchestrator/  # route implementation work to the correct narrower skill
+│   ├── backend-implementation/  # implement backend behavior safely
+│   ├── frontend-implementation/  # implement frontend / client behavior safely
+│   ├── integration-implementation/  # implement cross-system integration behavior safely
 │   ├── dependency-change-review/  # review dependency/build/lockfile changes
 │   └── database-migration-safety/  # schema and migration safety review
 └── templates/                # shared templates for review / risk skills
@@ -88,13 +91,50 @@ script rule.
 - Helper scripts must be non-destructive by default; any mutation must be
   declared in the skill's `Forbidden Actions` exception.
 
+## Implementation work is split into narrower skills
+
+Implementation is **routed**, not broad:
+
+- [`implementation-orchestrator`](skills/implementation-orchestrator/SKILL.md)
+  — classifies the task and dispatches to one narrower skill; never
+  edits code.
+- [`backend-implementation`](skills/backend-implementation/SKILL.md) —
+  API, service, persistence, auth (backend / server-side only).
+- [`frontend-implementation`](skills/frontend-implementation/SKILL.md) —
+  UI, client state, forms, routing (frontend / client-side only).
+- [`integration-implementation`](skills/integration-implementation/SKILL.md) —
+  external API clients, webhooks, queues, file batch
+  (cross-system only).
+
+Use the **orchestrator** when a task mixes layers or ownership is
+unclear. Use the narrower skill directly when ownership is obvious.
+Each narrower skill stops and routes back to the orchestrator when
+the task crosses into another layer or needs a review gate
+(migration, dependency change, security-sensitive work).
+
+This split improves OpenClaw / MiniMax reliability by:
+
+- **Reducing skill scope** — each implementation skill is small
+  enough to read end-to-end, and the "what does this skill do?"
+  question has a short, honest answer.
+- **Preventing broad edits** — a single implementation skill never
+  touches more than one layer in a session.
+- **Routing high-risk work to a review skill first** — migrations,
+  dependency changes, and security-sensitive work cannot reach an
+  implementation skill without a review gate.
+- **Making ownership visible** — the routing report names the owning
+  module per layer, so a handoff to another agent has concrete
+  targets.
+
 ## Status
 
 - ✅ 20 agent specs, all using the unified `*_AGENT.md` naming
 - ✅ Foundation skills exist: `repo-discovery`, `task-state-management`,
   `handoff-packet`, `validation-runner` (all currently `draft`)
 - ✅ Software delivery skills exist: `test-gap-analysis`,
-  `test-generation`, `backend-implementation` (all currently `draft`)
+  `test-generation`, `implementation-orchestrator`,
+  `backend-implementation`, `frontend-implementation`,
+  `integration-implementation` (all currently `draft`)
 - ✅ Review and risk skills exist: `code-change-review`,
   `security-review`, `dependency-change-review`,
   `database-migration-safety` (all currently `draft`)
