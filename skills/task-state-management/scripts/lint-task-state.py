@@ -186,29 +186,56 @@ def check_workspace(ws: Path) -> list[str]:
 
 
 def main():
-    workspaces = sorted(WORKSPACE_ROOT.glob("tsm-s*"))
-    if not workspaces:
-        print("FAIL: no tsm-s* workspaces found", file=sys.stderr)
+    import argparse
+    parser = argparse.ArgumentParser(description="Linter for task-state management workspaces.")
+    parser.add_argument("path", nargs="?", help="Single workspace directory")
+    parser.add_argument("--self-test", action="store_true",
+                        help="Run the canonical 3-scenario self-test (A2 exercise)")
+    args = parser.parse_args()
+
+    if args.self_test:
+        workspaces = sorted(WORKSPACE_ROOT.glob("tsm-s*"))
+        if not workspaces:
+            print("FAIL: no tsm-s* workspaces found", file=sys.stderr)
+            sys.exit(1)
+        all_pass = True
+        for ws in workspaces:
+            issues = check_workspace(ws)
+            if not issues:
+                state = json.loads((ws / "state.json").read_text())
+                print(f"  [{ws.name}] PASS  (current_state={state['current_state']}, "
+                      f"history len={len(state.get('history', []))})")
+            else:
+                all_pass = False
+                state = json.loads((ws / "state.json").read_text())
+                print(f"  [{ws.name}] FAIL  (current_state={state['current_state']}, "
+                      f"history len={len(state.get('history', []))})")
+                for issue in issues:
+                    print(f"      {issue}")
+        print()
+        print("OVERALL:", "PASS" if all_pass else "FAIL")
+        sys.exit(0 if all_pass else 1)
+
+    if not args.path:
+        parser.print_help()
+        sys.exit(64)
+
+    target = Path(args.path)
+    if not target.is_dir():
+        print(f"FAIL: not a directory: {target}")
         sys.exit(1)
-
-    all_pass = True
-    for ws in workspaces:
-        issues = check_workspace(ws)
-        if not issues:
-            state = json.loads((ws / "state.json").read_text())
-            print(f"  [{ws.name}] PASS  (current_state={state['current_state']}, "
-                  f"history len={len(state.get('history', []))})")
-        else:
-            all_pass = False
-            state = json.loads((ws / "state.json").read_text())
-            print(f"  [{ws.name}] FAIL  (current_state={state['current_state']}, "
-                  f"history len={len(state.get('history', []))})")
-            for issue in issues:
-                print(f"      {issue}")
-
-    print()
-    print("OVERALL:", "PASS" if all_pass else "FAIL")
-    sys.exit(0 if all_pass else 1)
+    issues = check_workspace(target)
+    if not issues:
+        state = json.loads((target / "state.json").read_text())
+        print(f"[{target.name}] PASS  (current_state={state['current_state']}, "
+              f"history len={len(state.get('history', []))})")
+        sys.exit(0)
+    state = json.loads((target / "state.json").read_text())
+    print(f"[{target.name}] FAIL  (current_state={state['current_state']}, "
+          f"history len={len(state.get('history', []))})")
+    for issue in issues:
+        print(f"      {issue}")
+    sys.exit(1)
 
 
 if __name__ == "__main__":

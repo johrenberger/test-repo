@@ -156,27 +156,66 @@ def lint_report(path: Path) -> list[str]:
 
 
 def main() -> int:
-    report_dirs = sorted(d for d in EXERCISE.iterdir() if d.is_dir() and d.name.startswith("ios-"))
-    if not report_dirs:
-        print("no ios-s* directories found")
+    import argparse
+    parser = argparse.ArgumentParser(description="Linter for implementation-routing reports.")
+    parser.add_argument("path", nargs="?", help="Single report file or directory of reports")
+    parser.add_argument("--self-test", action="store_true", help="Run the canonical 5-scenario self-test")
+    args = parser.parse_args()
+
+    if args.self_test:
+        report_dirs = sorted(d for d in EXERCISE.iterdir() if d.is_dir() and d.name.startswith("ios-"))
+        if not report_dirs:
+            print("no ios-s* directories found")
+            return 1
+        overall = True
+        for d in report_dirs:
+            report_path = d / "reports/implementation-routing-report.md"
+            issues = lint_report(report_path)
+            if not issues:
+                print(f"  [{d.name}] PASS")
+            else:
+                overall = False
+                print(f"  [{d.name}] FAIL")
+                for i in issues:
+                    print(f"      {i}")
+        print()
+        if overall:
+            print("OVERALL: PASS")
+            return 0
+        print("OVERALL: FAIL")
         return 1
-    overall = True
-    for d in report_dirs:
-        report_path = d / "reports/implementation-routing-report.md"
-        issues = lint_report(report_path)
+
+    if not args.path:
+        parser.print_help()
+        return 64
+
+    target = Path(args.path)
+    if target.is_file():
+        issues = lint_report(target)
         if not issues:
-            print(f"  [{d.name}] PASS")
-        else:
-            overall = False
-            print(f"  [{d.name}] FAIL")
-            for i in issues:
-                print(f"      {i}")
-    print()
-    if overall:
-        print("OVERALL: PASS")
-        return 0
-    print("OVERALL: FAIL")
-    return 1
+            print(f"[{target.name}] PASS")
+            return 0
+        for i in issues:
+            print(f"    {i}")
+        return 1
+    if target.is_dir():
+        reports = sorted(target.glob("**/implementation-routing-report.md"))
+        if not reports:
+            print(f"no implementation-routing-report.md files found under {target}")
+            return 1
+        overall = True
+        for r in reports:
+            issues = lint_report(r)
+            if not issues:
+                print(f"  [{r}] PASS")
+            else:
+                overall = False
+                print(f"  [{r}] FAIL")
+                for i in issues:
+                    print(f"      {i}")
+        return 0 if overall else 1
+    parser.print_help()
+    return 64
 
 
 if __name__ == "__main__":
