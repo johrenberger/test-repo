@@ -112,11 +112,24 @@ Before routing:
    - `mixed` — two or more of the above
 
    The mapping must cite at least one concrete file or module per
-   layer from the discovery artifact.
+   layer from the discovery artifact. **Known limitation
+   (Finding 1, B1 exercise):** a reference implementation that
+   uses keyword matching on the task description is brittle and
+   may mis-classify tasks that don't contain the expected
+   keywords (e.g. "fix the dashboard rendering bug"). A real
+   orchestrator should parse the task description to extract
+   concrete file paths and module names, then look them up in
+   the discovery artifact.
 
 3. **Identify smallest impacted module / subtree.** For each
    impacted layer, name the module(s) the change should land in.
    If multiple layers are touched, name the owning module for each.
+   **Known limitation (Finding 2, B1 exercise):** a reference
+   implementation that walks the filesystem for the first
+   module with `src/main/java` is brittle. A real orchestrator
+   should parse the task description for class / component
+   names and look them up in the discovery artifact's module
+   list.
 
 4. **Decide whether to route to a review skill first.** Apply these
    gates:
@@ -145,7 +158,22 @@ Before routing:
    - `database-migration-safety` (gate, then usually
      `backend-implementation`)
    - `dependency-change-review` (gate, then re-route)
-   - architecture review via `ARCHITECT_AGENT` (gate, then re-route)
+   - `security-review` (gate; the implementation skill is decided
+     after the security review is satisfied)
+   - `architecture-review` (gate; same — see note below)
+
+   **Note on `architecture-review`:** the registry currently does
+   not contain an `architecture-review` skill. The orchestrator
+   should fall back to `backend-implementation` for now and flag
+   the architectural novelty in the routing report's Risks
+   section. This is a known gap (Finding 4, B1 exercise) and will
+   be resolved when the `architecture-review` skill lands.
+   **Note on infrastructure/deployment and documentation-only
+   layers:** these layers are detected but have no dedicated
+   implementation skill in the registry. The orchestrator
+   should fall back to `backend-implementation` (the closest
+   match) and flag the routing in the report (Finding 3, B1
+   exercise; Finding 6, B1 exercise).
 
    If the task is `mixed` and the layers are roughly equal, the
    default is to **sequence** them: one orchestrator → one
@@ -290,3 +318,15 @@ performed by the receiving skill (typically
 ## Maturity
 
 `draft` — initial spec, not yet run end-to-end.
+
+## Helper scripts
+
+- `scripts/lint-routing-report.py` — 10-rule linter for the
+  routing report. Three invocation modes: single file, directory,
+  `--self-test`. Exit codes: 0 (pass), 1 (failure), 64 (bad
+  usage). The linter checks frontmatter, all 7 layer rows in
+  the impacted-layers table, the selected skill is in the
+  allowed set, the handoff section has all 7 required fields,
+  and no template placeholders remain in the report body.
+  Promoted from the B1 exercise
+  (`/data/.openclaw/workspace/tasks/2026-06-12-impl-orchestrator-exercise/reports/lint-routing-reports.py`).

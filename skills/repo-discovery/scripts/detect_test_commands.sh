@@ -74,9 +74,14 @@ elif [[ -f "$REPO_ROOT/build.gradle" || -f "$REPO_ROOT/build.gradle.kts" ]]; the
 fi
 
 # --- Python ---
+# Finding 5 (A1 exercise): pytest.ini is a high-confidence source
+# because it explicitly configures pytest. Demote to medium only
+# if there's a tests/ or test/ directory with no pytest.ini.
 if [[ -f "$REPO_ROOT/pyproject.toml" ]] && grep -q "pytest" "$REPO_ROOT/pyproject.toml" 2>/dev/null; then
   emit "pytest" "pytest" "pyproject.toml" "high"
-elif [[ -f "$REPO_ROOT/pytest.ini" || -f "$REPO_ROOT/conftest.py" \
+elif [[ -f "$REPO_ROOT/pytest.ini" ]]; then
+  emit "pytest" "pytest" "pytest.ini" "high"
+elif [[ -f "$REPO_ROOT/conftest.py" \
       || -d "$REPO_ROOT/tests" || -d "$REPO_ROOT/test" ]]; then
   emit "pytest" "pytest" "conftest.py" "medium"
 fi
