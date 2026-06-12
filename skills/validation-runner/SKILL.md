@@ -60,6 +60,9 @@ accessing secrets.
    config) are recorded but do not stop the run.
 5. **Render** the report from `templates/validation-report.md`, including
    each command, its exit code, top-of-output excerpt, and a summary.
+   If any command is `trivial_pass`, set the report outcome to
+   `partial` and add a warning bullet to `## Next steps` explaining
+   which command(s) were trivial.
 6. **Write** the report to the canonical path. Do not modify any file
    inside `REPO_ROOT`.
 
@@ -123,7 +126,20 @@ reports "command not available in this repo" and skips it.
 Receiving agents may rely on:
 
 - `outcome` — `passed` | `failed` | `partial` | `not_run`
+  - `passed` — every command exited 0 and at least one command did
+    meaningful work
+  - `partial` — every command exited 0, but at least one command was
+    `trivial_pass` (no real work was done). The agent should treat
+    this as a warning, not a failure.
+  - `failed` — at least one command exited non-zero
+  - `not_run` — no commands were detected (the report's `## Manual
+    steps` section explains what to do)
 - `commands` — array of `{id, command, exit_code, duration_ms, status}`
+  - `status` per command: `passed` | `failed` | `trivial_pass` |
+    `refused` | `skipped`
+  - `trivial_pass` means the command exited 0 but a "no work done"
+    pattern was detected (see "Trivial pass detection" below). The
+    consumer can rely on this to surface the warning.
 - `top_failures` — array of the first error line per failed command
 - `next_steps` — array of suggested follow-ups
 
@@ -131,6 +147,8 @@ Receiving agents must not rely on:
 
 - Coverage % — the runner does not compute coverage by default.
 - Build success — the runner does not build; it tests/lints/typechecks.
+- A test command that exited 0 — the runner may have downgraded the
+  status to `trivial_pass` if no tests were run.
 
 ## Validation
 
@@ -139,6 +157,36 @@ Receiving agents must not rely on:
   with a known manifest, and zero lines for an empty repo.
 - A self-test on this repo (`test-repo`) must produce zero detected
   commands and a `not_run` outcome with a clear manual-steps list.
+- `run_validation.sh` must downgrade a `mvn test` command with no real
+  tests (log contains both "No tests to run" and "BUILD SUCCESS") to
+  status `trivial_pass`, and a `mvn test` with no real sources
+  ("No sources to compile" + "BUILD SUCCESS") to the same status. The
+  overall report outcome in these cases must be `partial`, not
+  `passed`.
+
+## Trivial pass detection
+
+A test command that exits 0 but did no meaningful work is a real
+failure mode that masks underlying problems (orphaned build files,
+missing test sources, broken test infrastructure). The runner
+inspects the captured log after the command finishes and downgrades
+the status from `passed` to `trivial_pass` if any of these patterns
+match:
+
+- **Maven:** log contains both `No tests to run` and `BUILD SUCCESS`,
+  OR both `No sources to compile` and `BUILD SUCCESS`.
+- **Gradle:** log contains `BUILD SUCCESSFUL` but no occurrence of
+  `test` or `spec` (case-insensitive).
+- **pytest:** log contains `0 tests collected`, `collected 0 items`,
+  or a summary line of `0 passed` with no failures.
+- **Generic:** the log is under 100 bytes and contains no
+  recognizable success pattern (`test`, `spec`, `pass`, `fail`,
+  `build`, `error`).
+
+The detection logic lives at the bottom of
+`scripts/run_validation.sh` in the `detect_trivial_pass` function.
+Adding a new pattern is a one-line edit; the runner does not need
+to be re-installed or re-tested beyond the new pattern.
 
 ## Completion Criteria
 
