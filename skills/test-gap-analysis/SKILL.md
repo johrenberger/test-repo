@@ -78,9 +78,27 @@ test owner or the requesting agent.
    - contract test gap
    - regression test gap
    - security / negative test gap
-5. **Avoid E2E/load/chaos recommendations** unless evidence in the
-   discovery report (e.g. existing k6/locust/playwright artifacts) shows
-   the repo already supports them.
+5. **Avoid E2E/load/chaos recommendations** unless E2E infrastructure
+   is detected in the repo. E2E infrastructure detection:
+   - `playwright.config.{js,ts,mjs}` or `@playwright/test` in
+     `package.json` dependencies → **playwright** detected
+   - `cypress.config.{js,ts,mjs}` or `cypress/` directory →
+     **cypress** detected
+   - `k6` or `k6 run` in CI workflow files or scripts → **k6**
+     detected
+   - `locustfile.py` at repo root or in `tests/` → **locust**
+     detected
+   - `tests/e2e/`, `e2e/`, or `integration/` with non-unit test
+     patterns (heavy fixtures, browser drivers) → **e2e** detected
+     (low confidence; manual review required)
+   - 0 of the above → "no E2E infrastructure detected" is the
+     default; E2E/load/chaos recommendations must be **omitted
+     from the report**, not downgraded
+
+   When E2E infrastructure is detected, the report's `## E2E
+   infrastructure` section lists each detected tool with the
+   evidence file path. When none is detected, that section says
+   "none detected" and E2E recommendations are omitted.
 6. **Render the report** from `templates/test-gap-report.md`, including
    every required field from the task spec.
 7. **Write the report** to
@@ -148,7 +166,14 @@ Receiving agents must not rely on:
 - The report file parses as markdown and contains every required field.
 - Every gap has a `risk` from the table in `references/risk-weighting.md`
   and a `recommended_test_type` from the gap classification list.
-- `confidence` is one of `low | medium | high`.
+- `confidence` is one of `low | medium | high`. The confidence
+  values are populated by the orchestrator based on:
+  - `high` — multiple corroborating signals (e.g. a Maven plugin
+    for the test framework + a `*Test.java` source file)
+  - `medium` — a single strong signal (e.g. a `pytest.ini` alone)
+  - `low` — inferred from convention (e.g. a `tests/` directory
+    with no manifest, or a `*Spec.groovy` next to no Spock
+    configuration)
 - `scripts/lint-test-gap-report.py` is the canonical linter. It
   enforces the 10-rule contract (frontmatter, required sections,
   allowed risk / gap_type values, evidence, validation-command

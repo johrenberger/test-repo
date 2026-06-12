@@ -165,6 +165,12 @@ rejected with a clear error referencing this table.
 - For `blocked`: at least one blocker file exists with status `open`.
 - For any forward transition: any prior open blocker is either `resolved`
   or has an explicit `deferred` decision.
+- For the **false-blocker** case (a blocker that turned out to be
+  invalid or self-resolvable), the resolution note in the blocker file
+  is the load-bearing artifact: a `decisions/<id>.md` entry is also
+  recommended but optional. Moving `blocked → in_progress` requires
+  only the blocker file's `Status: resolved` with a Resolution note
+  explaining the false alarm.
 
 ## Outputs
 

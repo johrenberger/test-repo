@@ -28,14 +28,21 @@ accessing secrets.
 ## Required Inputs
 
 - `TASK_ID` — used for the report path:
-  `/data/.openclaw/workspace/tasks/<TASK_ID>/validation/validation-report.md`
+  `/data/.openclaw/workspace/tasks/<TASK_ID>/validation/validation-report.md`.
+  Must match the regex `[a-z0-9][a-z0-9-]{0,63}` (max 64 chars,
+  lowercase, hyphens allowed). Nested exercise patterns are
+  supported: `<exercise-id>/<scenario-id>` is valid as long as
+  each segment individually matches the regex and the joined
+  string is at most 64 chars. Example:
+  `2026-06-12-validation-runner-exercise/val-s1-broadleaf-pom`.
 - `REPO_ROOT` — absolute path to the repository being validated.
 - `SCOPE` (optional) — file path or module to focus targeted validation on.
 - `MODE` (optional) — `targeted` (default) or `full`.
 
 ## Preflight
 
-- Verify `TASK_ID` and `REPO_ROOT` are set and valid.
+- Verify `TASK_ID` matches the regex above and `REPO_ROOT` is set
+  and is an existing directory.
 - Run `scripts/detect_validation_commands.sh "$REPO_ROOT"` to enumerate
   available commands. If no commands are detected, stop and write a report
   that says validation cannot be run, with likely manual next steps.
@@ -43,6 +50,29 @@ accessing secrets.
 - Ensure the output directory
   `/data/.openclaw/workspace/tasks/<TASK_ID>/validation/` exists or can be
   created.
+
+## Environment variables
+
+The runner uses shell-inherited environment variables when
+executing validation commands. In particular:
+
+- `PATH` — must include the directories for the build tools
+  (e.g. `mvn`, `gradle`, `pytest`, `node`). The runner does
+  **not** inherit `/etc/profile.d` content via `subprocess.run`,
+  so agents must set `PATH` explicitly when invoking the runner
+  from a non-interactive shell.
+- `JAVA_HOME` — must point to a valid JDK for Maven / Gradle
+  validation. The runner does not set this; the calling agent
+  must export it. Recommended: `JAVA_HOME=/data/jdk21/jdk-21.0.5+11`
+  (or the JDK version the repo requires).
+- `MAVEN_HOME` (optional) — set to the Maven root for the
+  required version. The runner uses `mvn` from `PATH` if
+  present, falling back to the wrapper (`./mvnw`).
+- `GITHUB_TOKEN` and similar secrets — the runner does **not**
+  read or pass through any environment variable matching
+  `*TOKEN*`, `*SECRET*`, `*KEY*`, `*PASSWORD*`, or `*CRED*`.
+  Validation commands that need credentials must read them
+  themselves; the runner will refuse to inject them.
 
 ## Workflow
 
@@ -152,7 +182,10 @@ Receiving agents must not rely on:
 
 ## Validation
 
-- `bash -n` on both scripts must pass.
+- `bash -n` on both scripts must pass. This is enforced as a CI
+  gate: any change to `scripts/detect_validation_commands.sh` or
+  `scripts/run_validation.sh` triggers a `bash -n` check in the
+  test-repo CI workflow; a non-zero exit blocks the PR.
 - `detect_validation_commands.sh` must emit at least one line for any repo
   with a known manifest, and zero lines for an empty repo.
 - A self-test on this repo (`test-repo`) must produce zero detected
@@ -163,6 +196,22 @@ Receiving agents must not rely on:
   ("No sources to compile" + "BUILD SUCCESS") to the same status. The
   overall report outcome in these cases must be `partial`, not
   `passed`.
+
+## Multi-manifest warning
+
+When `detect_validation_commands.sh` finds **two or more distinct
+build manifests** in the same repo (e.g. `pom.xml` + `build.gradle`,
+or `package.json` + `requirements.txt`), the report's `## Next steps`
+section MUST include a warning bullet:
+
+> **Multi-manifest repo detected:** `<list of manifests found>`. The
+> validation runner will run each command independently. This usually
+> indicates a half-baked or in-migration repo. Consider running
+> validation manually to confirm which manifest is authoritative.
+
+This warning is informational; the runner does not refuse to run
+or downgrade the outcome. The agent should treat it as a flag to
+investigate the repo state.
 
 ## Trivial pass detection
 
