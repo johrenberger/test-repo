@@ -19,8 +19,62 @@
 #   2  command not executable / not present on PATH
 #  64  bad usage
 #  66  bad repo_root
+#
+# Per-command `status` values (printed as the 2nd field of the
+# single-line record):
+#   passed         - exit 0, meaningful work done
+#   failed         - exit != 0
+#   trivial_pass   - exit 0 but a "no work done" pattern was detected
+#                    (e.g. "No tests to run" + "BUILD SUCCESS" for Maven)
+#   refused        - the runner refused to execute (installer detected)
+#   skipped        - the orchestrator chose to skip the command
 
 set -uo pipefail
+
+# ---- trivial-pass detection ----
+# Args: $1 = log file path. Echoes "trivial" if matched, returns 0 on
+# match, 1 otherwise. Patterns detected (one match is enough):
+#   * Maven: log contains both "No tests to run" and "BUILD SUCCESS"
+#   * Maven: log contains both "No sources to compile" and "BUILD SUCCESS"
+#   * Gradle: log contains "BUILD SUCCESSFUL" but no "test" or "spec" line
+#   * pytest: log contains "0 tests collected" or "collected 0 items"
+#   * pytest: log summary line "0 passed" (and no failures)
+#   * Generic: log is < 100 bytes AND no recognizable success pattern
+detect_trivial_pass() {
+  local logf="$1"
+  local log_content
+  log_content=$(cat "$logf" 2>/dev/null || true)
+  [[ -z "$log_content" ]] && return 1
+
+  # Maven: BUILD SUCCESS with no real test/source activity
+  if echo "$log_content" | grep -q "BUILD SUCCESS"; then
+    if echo "$log_content" | grep -q "No tests to run" \
+       || echo "$log_content" | grep -q "No sources to compile"; then
+      echo "trivial" && return 0
+    fi
+  fi
+
+  # Gradle: BUILD SUCCESSFUL with no test references
+  if echo "$log_content" | grep -q "BUILD SUCCESSFUL"; then
+    if ! echo "$log_content" | grep -qiE "test|spec"; then
+      echo "trivial" && return 0
+    fi
+  fi
+
+  # pytest: zero tests collected / zero items / zero passed
+  if echo "$log_content" | grep -qE "(0 tests collected|collected 0 items|=+ 0 passed)"; then
+    echo "trivial" && return 0
+  fi
+
+  # Generic: very short log with no test-like content
+  local log_len=${#log_content}
+  if (( log_len < 100 )) && ! echo "$log_content" | grep -qiE "test|spec|pass|fail|build|error"; then
+    echo "trivial" && return 0
+  fi
+
+  return 1
+}
+
 
 if [[ $# -lt 3 ]]; then
   echo "usage: $0 <repo_root> <command_id> <command_string...>" >&2
@@ -69,8 +123,16 @@ end_ns=$(date +%s%N)
 
 dur_ms=$(( (end_ns - start_ns) / 1000000 ))
 
+# Detect "trivial pass": exit 0 but no meaningful work was done. A test
+# command that exits 0 with "No tests to run" is masking a real failure
+# (e.g. orphaned build.gradle, missing test sources). Downgrade the
+# status to `trivial_pass` and the report's overall outcome becomes
+# `partial` (handled by the orchestrator).
 if [[ $rc -eq 0 ]]; then
   status="passed"
+  if [[ -r "$LOG_FILE" ]] && detect_trivial_pass "$LOG_FILE"; then
+    status="trivial_pass"
+  fi
 else
   status="failed"
 fi
