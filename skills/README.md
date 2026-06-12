@@ -129,7 +129,7 @@ first; the orchestrator decides the right narrower skill.
 | [`backend-implementation`](backend-implementation/SKILL.md) | Implement **backend / server-side** behavior (API, service, persistence, auth) | `draft` |
 | [`frontend-implementation`](frontend-implementation/SKILL.md) | Implement **frontend / client-side** behavior (UI, state, forms, routing) | `draft` |
 | [`integration-implementation`](integration-implementation/SKILL.md) | Implement **cross-system integration** behavior (API clients, webhooks, queues, file batch) | `draft` |
-| [`test-gap-analysis`](test-gap-analysis/SKILL.md) | Risk-weighted test gap analysis without writing tests | `draft` |
+| [`test-gap-analysis`](test-gap-analysis/SKILL.md) | Risk-weighted test gap analysis without writing tests | `usable` |
 | [`test-generation`](test-generation/SKILL.md) | Generate or update tests in the existing framework and style | `validated` |
 
 ### When to use the orchestrator
