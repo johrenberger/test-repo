@@ -50,6 +50,21 @@ test owner or the requesting agent.
    test file under the discovered test directories. Detect the framework
    per the `Test framework detection` table in
    `references/risk-weighting.md`. Record the inventory.
+
+   **Build-directory exclusion (mandatory).** Files under `target/`,
+   `build/`, `dist/`, `out/`, `node_modules/`, `.venv/`, `__pycache__/`,
+   or any other build / dependency directory MUST be excluded from
+   the test inventory. Build tools (Maven, Gradle, npm, pytest)
+   generate stub files in these directories (e.g.
+   `target/generated-sources/.../...Test.java`) that look like
+   test files but are not source-controlled and not actually
+   executed. Including them causes an agent to mis-classify a
+   class as "tested" when only its generated stub exists.
+
+   The exclusion list above is the minimum; if the discovery
+   report names additional build / cache directories, exclude
+   those too. The agent must record the exclusion list in the
+   report's `## Provenance` section so the choice is auditable.
 2. **Source ↔ test mapping.** For each source directory, list the
    corresponding test directory contents. Note modules that have no
    adjacent test files. Do not assert coverage percentages unless a real
@@ -78,8 +93,13 @@ test owner or the requesting agent.
 - Read files anywhere under `REPO_ROOT`.
 - Read coverage artifacts if present (e.g. `coverage/lcov.info`,
   `target/site/jacoco/jacoco.xml`, `coverage.xml`, `cobertura.xml`,
-  `lcov.dat`). Do not generate them.
+  `lcov.dat`). Do not generate them. Note: `target/site/jacoco/`
+  is a build output and is excluded from the test inventory
+  per Workflow step 1, but reading it as a coverage artifact
+  is allowed.
 - Create the report file under the task workspace.
+- Run `scripts/lint-test-gap-report.py` (or any read-only linter)
+  to validate the report before publishing.
 - Print progress lines to stdout/stderr.
 
 ## Forbidden Actions
@@ -129,6 +149,29 @@ Receiving agents must not rely on:
 - Every gap has a `risk` from the table in `references/risk-weighting.md`
   and a `recommended_test_type` from the gap classification list.
 - `confidence` is one of `low | medium | high`.
+- `scripts/lint-test-gap-report.py` is the canonical linter. It
+  enforces the 10-rule contract (frontmatter, required sections,
+  allowed risk / gap_type values, evidence, validation-command
+  table, E2E recommendation, no fabricated coverage %, size
+  sanity). Run it before publishing the report:
+  `python3 scripts/lint-test-gap-report.py <report.md>`
+  or `python3 scripts/lint-test-gap-report.py <reports-dir>`
+  to lint a batch.
+- The linter accepts a preflight-aborted marker (`# Test gap
+  report (PREFLIGHT ABORTED)` plus an abort reason) as a valid
+  alternative to a full report. Any other missing field is a
+  failure.
+- The linter also supports `--self-test` for the B6 exercise
+  (5 fixtures under
+  `/data/.openclaw/workspace/tasks/2026-06-12-test-gap-analysis-exercise/`).
+
+## Helper scripts
+
+- `scripts/lint-test-gap-report.py` — canonical linter. 10 rules
+  (see docstring at the top of the file for the full list).
+  Exit codes: 0 = pass, 1 = one or more reports failed,
+  64 = bad usage. Read-only w.r.t. the repo and safe in any
+  environment.
 
 ## Completion Criteria
 
