@@ -48,8 +48,17 @@ fi
 }
 [[ -d "$REPO_ROOT/src" && -d "$REPO_ROOT/node_modules" || -f "$REPO_ROOT/package.json" ]] \
   && [[ -d "$REPO_ROOT/src" ]] && emit "source_dir" "node" "src"
-[[ -d "$REPO_ROOT/test" || -d "$REPO_ROOT/tests" || -d "$REPO_ROOT/__tests__" ]] \
-  && emit "test_dir" "node" "test"
+# Finding 2 (A1 exercise): gate the Node test-dir emission on the
+# presence of package.json or a JS/TS file in the same scope. A
+# pure-Python repo with tests/ (pytest convention) must NOT emit
+# a false-positive test_dir::node. The current emission is
+# suppressed if package.json is absent and no .js/.ts files exist.
+if [[ -d "$REPO_ROOT/test" || -d "$REPO_ROOT/tests" || -d "$REPO_ROOT/__tests__" ]]; then
+  if [[ -f "$REPO_ROOT/package.json" ]] \
+     || find "$REPO_ROOT" -maxdepth 2 -type f \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' \) -print -quit 2>/dev/null | grep -q .; then
+    emit "test_dir" "node" "test"
+  fi
+fi
 [[ -f "$REPO_ROOT/tsconfig.json" ]] && emit "language" "typescript" "tsconfig.json"
 [[ -f "$REPO_ROOT/jest.config.js" || -f "$REPO_ROOT/jest.config.ts" \
    || -f "$REPO_ROOT/jest.config.json" ]] && emit "framework" "jest" "jest.config"
@@ -129,5 +138,54 @@ done
 shopt -u nullglob
 [[ -d "$REPO_ROOT/auth" || -d "$REPO_ROOT/src/auth" || -d "$REPO_ROOT/app/auth" ]] \
   && emit "risk" "auth_module" "auth/"
+
+# --- Multi-module detection (Finding 1, A1 exercise) ---
+# If the repo root has no manifests, walk 1 level into top-level
+# subdirs and count distinct manifests. Emit a `multi_module`
+# evidence line if >= 2 distinct manifests are found.
+# This is the script-side fix for the orchestrator-side walk
+# that A1 had to add manually.
+emit_multi_module() {
+  local sub module_count=0
+  for sub in "$REPO_ROOT"/*/; do
+    [[ -d "$sub" ]] || continue
+    local name
+    name=$(basename "$sub")
+    case "$name" in
+      .git|.github|.idea|.vscode|.gitkeep|node_modules|target|build|dist|out|docs|doc|licenses) continue ;;
+    esac
+    # A "module" is a subdir with its own build manifest
+    if [[ -f "$sub/pom.xml" || -f "$sub/build.gradle" || -f "$sub/build.gradle.kts" \
+       || -f "$sub/package.json" || -f "$sub/requirements.txt" || -f "$sub/pyproject.toml" \
+       || -f "$sub/Cargo.toml" || -f "$sub/go.mod" ]]; then
+      module_count=$((module_count+1))
+    fi
+  done
+  if (( module_count >= 2 )); then
+    emit "layout" "multi-module" "subdir-walk"
+    emit "multi_module_count" "$module_count" "subdir-walk"
+  fi
+}
+emit_multi_module
+
+# --- Markdown / documentation fall-back (Finding 4, A1 exercise) ---
+# If the repo has no manifests at all, scan the top-level
+# file extensions and emit markdown as a detected stack when
+# .md files are present. This makes the SKILL.md's self-test
+# (`primary_stack: markdown` on this repo) pass without
+# orchestrator-side help.
+if ! find "$REPO_ROOT" -maxdepth 1 -type f \( -name 'pom.xml' -o -name 'build.gradle*' \
+     -o -name 'package.json' -o -name 'requirements.txt' -o -name 'pyproject.toml' \
+     -o -name 'Cargo.toml' -o -name 'go.mod' -o -name '*.sln' -o -name 'global.json' \) \
+     -print -quit 2>/dev/null | grep -q .; then
+  md_count=$(find "$REPO_ROOT" -maxdepth 1 -type f -name '*.md' 2>/dev/null | wc -l)
+  if (( md_count > 0 )); then
+    emit "primary_stack" "markdown" "*.md (fallback)"
+  fi
+  py_count=$(find "$REPO_ROOT" -maxdepth 1 -type f -name '*.py' 2>/dev/null | wc -l)
+  if (( py_count > 0 )); then
+    emit "primary_stack" "python" "*.py (fallback)"
+  fi
+fi
 
 exit 0
