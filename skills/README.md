@@ -125,7 +125,7 @@ first; the orchestrator decides the right narrower skill.
 
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
-| [`implementation-orchestrator`](implementation-orchestrator/SKILL.md) | Route implementation work to the correct narrower skill; never edits code | `draft` |
+| [`implementation-orchestrator`](implementation-orchestrator/SKILL.md) | Route implementation work to the correct narrower skill; never edits code | `usable` |
 | [`backend-implementation`](backend-implementation/SKILL.md) | Implement **backend / server-side** behavior (API, service, persistence, auth) | `draft` |
 | [`frontend-implementation`](frontend-implementation/SKILL.md) | Implement **frontend / client-side** behavior (UI, state, forms, routing) | `draft` |
 | [`integration-implementation`](integration-implementation/SKILL.md) | Implement **cross-system integration** behavior (API clients, webhooks, queues, file batch) | `draft` |
