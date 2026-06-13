@@ -348,4 +348,17 @@ plus the receiving skill.
 
 ## Maturity
 
-`draft` — initial spec, not yet run end-to-end.
+`usable` — initial spec, run end-to-end on past decisions; promotion to
+`validated` requires a real exercise artifact and a passing linter
+(see Helper scripts below).
+
+## Helper scripts
+
+- `scripts/lint-adr.py` — 8-rule linter for ADR files. Three
+  invocation modes: single file, directory (lints all `*-adr.md`
+  under it), `--self-test`. Exit codes: 0 (pass), 1 (failure), 64
+  (bad usage), 66 (file not found). The linter checks the title
+  format (`# ADR-NNNN: <title>`), the 5 required frontmatter
+  fields, the status is in the allowed set, the 4 required
+  sections are populated, the Options table has at least 2 rows,
+  and no template placeholders remain.
