@@ -231,7 +231,7 @@ infrastructure. Those actions are operator-only.
 
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
-| [`release-readiness`](release-readiness/SKILL.md) | Aggregate evidence into a go / no-go readiness report; never deploys | `draft` |
+| [`release-readiness`](release-readiness/SKILL.md) | Aggregate evidence into a go / no-go readiness report; never deploys | `validated` |
 | [`incident-triage`](incident-triage/SKILL.md) | Structure incident investigation; never executes production changes | `draft` |
 | [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `draft` |
 | [`runbook-authoring`](runbook-authoring/SKILL.md) | Create / update operational runbooks from validated evidence; gates destructive steps | `draft` |
