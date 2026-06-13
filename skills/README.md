@@ -163,7 +163,7 @@ ranked findings reports.
 | [`code-change-review`](code-change-review/SKILL.md) | Read-only review of local code changes with severity-ranked findings | `validated` |
 | [`security-review`](security-review/SKILL.md) | Code / config security review with OWASP, secrets, and authz checklists | `validated` |
 | [`dependency-change-review`](dependency-change-review/SKILL.md) | Review of dependency, build, and lockfile changes | `validated` |
-| [`database-migration-safety`](database-migration-safety/SKILL.md) | Schema and migration safety review with expand-and-contract guidance | `draft` |
+| [`database-migration-safety`](database-migration-safety/SKILL.md) | Schema and migration safety review with expand-and-contract guidance | `validated` |
 | [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `draft` |
 | [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `draft` |
 
