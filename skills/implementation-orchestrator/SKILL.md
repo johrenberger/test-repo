@@ -43,30 +43,17 @@ the following is true:
 
 ## Do Not Use When
 
-- The task is clearly **backend-only** (API, service, persistence,
-  auth, server-side logic) — invoke
-  [`backend-implementation`](../backend-implementation/SKILL.md)
-  directly.
-- The task is clearly **frontend-only** (UI, client state, forms,
-  routing) — invoke
-  [`frontend-implementation`](../frontend-implementation/SKILL.md)
-  directly.
-- The task is clearly **integration-only** (external API call,
-  webhook, queue, file batch, ETL) — invoke
-  [`integration-implementation`](../integration-implementation/SKILL.md)
-  directly.
-- The task is **discovery-only** — use
-  [`repo-discovery`](../repo-discovery/SKILL.md).
-- The task is **review-only** — use
-  [`code-change-review`](../code-change-review/SKILL.md),
-  [`security-review`](../security-review/SKILL.md), or
-  [`dependency-change-review`](../dependency-change-review/SKILL.md).
-- The task is **validation-only** — use
-  [`validation-runner`](../validation-runner/SKILL.md).
-- The task is **migration-only** and there is no other code change
-  — use
-  [`database-migration-safety`](../database-migration-safety/SKILL.md)
-  directly.
+Route directly to the narrower skill:
+
+| Task shape | Skill |
+| --- | --- |
+| Backend-only (API, service, persistence, auth, server logic) | [`backend-implementation`](../backend-implementation/SKILL.md) |
+| Frontend-only (UI, client state, forms, routing) | [`frontend-implementation`](../frontend-implementation/SKILL.md) |
+| Integration-only (external API, webhook, queue, file batch, ETL) | [`integration-implementation`](../integration-implementation/SKILL.md) |
+| Migration-only, no other code | [`database-migration-safety`](../database-migration-safety/SKILL.md) |
+| Discovery-only | [`repo-discovery`](../repo-discovery/SKILL.md) |
+| Review-only | [`code-change-review`](../code-change-review/SKILL.md), [`security-review`](../security-review/SKILL.md), or [`dependency-change-review`](../dependency-change-review/SKILL.md) |
+| Validation-only | [`validation-runner`](../validation-runner/SKILL.md) |
 
 ## Required Inputs
 
@@ -94,105 +81,61 @@ Before routing:
    deletion, dependency swap, security-sensitive change). If it is,
    route to a review skill first (see step 4 of Workflow).
 
-## Workflow
+## Routing decision — quick reference
 
-1. **Discovery gate.** Use `repo-discovery` unless a current
-   artifact is already attached to the task. Record the artifact
-   path in the routing report.
+This table is the short form of the Workflow. For rationale, edge
+cases, and the B1-exercise known limitations, see
+[`references/workflow.md`](references/workflow.md).
 
-2. **Identify impacted layer(s).** Map the task to one or more of:
+| Step | Action | Output |
+| --- | --- | --- |
+| 1 | Discovery gate | `discovery/repo-discovery.md` path in routing report |
+| 2 | Identify impacted layer(s) | One of: `backend`, `frontend`, `integration`, `database/migration`, `infrastructure/deployment`, `documentation-only`, `mixed` |
+| 3 | Identify smallest impacted module | Module path(s) cited from discovery artifact |
+| 4 | Apply review-skill gates | Migrations → `database-migration-safety`; new deps → `dependency-change-review`; architecturally novel → `architecture-review`; security-sensitive → `security-review` |
+| 5 | Pick exactly one routed skill | See [Allowed routing targets](#allowed-routing-targets) below |
+| 6 | Document risks | Use [`templates/approval-gate.md`](../../templates/approval-gate.md) for any blocker-level finding |
+| 7 | Hand off | Produce a [`handoff-packet`](../handoff-packet/SKILL.md) to the selected skill |
 
-   - `backend` — server-side logic, API, persistence, auth
-   - `frontend` — UI, client state, forms, routing
-   - `integration` — cross-system calls, messaging, webhooks, file
-     import/export
-   - `database/migration` — schema change, data backfill, migration
-   - `infrastructure/deployment` — provisioning, build, deploy
-   - `documentation-only` — docs / comments / spec changes
-   - `mixed` — two or more of the above
+For `mixed` tasks, sequence the layers: one orchestrator call per
+layer, with handoff packets between. Do not let a single
+implementation skill span two layers.
 
-   The mapping must cite at least one concrete file or module per
-   layer from the discovery artifact. **Known limitation
-   (Finding 1, B1 exercise):** a reference implementation that
-   uses keyword matching on the task description is brittle and
-   may mis-classify tasks that don't contain the expected
-   keywords (e.g. "fix the dashboard rendering bug"). A real
-   orchestrator should parse the task description to extract
-   concrete file paths and module names, then look them up in
-   the discovery artifact.
+### Allowed routing targets
 
-3. **Identify smallest impacted module / subtree.** For each
-   impacted layer, name the module(s) the change should land in.
-   If multiple layers are touched, name the owning module for each.
-   **Known limitation (Finding 2, B1 exercise):** a reference
-   implementation that walks the filesystem for the first
-   module with `src/main/java` is brittle. A real orchestrator
-   should parse the task description for class / component
-   names and look them up in the discovery artifact's module
-   list.
+Pick **exactly one** of:
 
-4. **Decide whether to route to a review skill first.** Apply these
-   gates:
+- `backend-implementation` (default for unclear `backend` work)
+- `frontend-implementation` (default for UI/client work)
+- `integration-implementation` (default for cross-system work)
+- `database-migration-safety` (gate, then usually `backend-implementation`)
+- `dependency-change-review` (gate, then re-route)
+- `security-review` (gate; the implementation skill is decided
+  after the security review is satisfied)
+- `architecture-review` (gate; the implementation skill is decided
+  after the architecture review is satisfied)
 
-   - Task requires a **destructive or irreversible migration** →
-     route to `database-migration-safety` first.
-   - Task requires a **new dependency, new package manager, or
-     build-tool change** → route to `dependency-change-review`
-     first.
-   - Task is **architecturally novel** (new pattern, new module
-     boundary, new persistence model) → route to architecture
-     review first (`ARCHITECT_AGENT`).
-   - Task is **security-sensitive** (auth, secrets handling,
-     cryptographic change, PII handling) → route to
-     `security-review` first.
+If the discovery flags a layer with no dedicated skill
+(infrastructure/deployment, documentation-only), fall back to
+`backend-implementation` and flag the routing in the report's
+Risks section.
 
-   The output of the review skill is a findings report and a
-   decision; only then does the orchestrator dispatch the
-   implementation work.
+## Stop Conditions (summary)
 
-5. **Produce the routing decision.** Pick exactly one of:
+Halt and surface a blocker (via `task-state-management`) when:
 
-   - `backend-implementation` (with the module(s) to change)
-   - `frontend-implementation` (with the module(s) to change)
-   - `integration-implementation` (with the integration boundary)
-   - `database-migration-safety` (gate, then usually
-     `backend-implementation`)
-   - `dependency-change-review` (gate, then re-route)
-   - `security-review` (gate; the implementation skill is decided
-     after the security review is satisfied)
-   - `architecture-review` (gate; same — see note below)
+- Acceptance criteria are unclear or contradictory.
+- A required review gate has not been scheduled for a destructive
+  migration, dependency change, security-sensitive change, or
+  architecturally novel change.
+- Module ownership is unclear and the module owners cannot be
+  inferred from the discovery artifact.
+- The task requires production credentials or deployment access.
+- The discovery artifact contradicts the task description in a way
+  that affects routing.
 
-   **Note on `architecture-review`:** the registry currently does
-   not contain an `architecture-review` skill. The orchestrator
-   should fall back to `backend-implementation` for now and flag
-   the architectural novelty in the routing report's Risks
-   section. This is a known gap (Finding 4, B1 exercise) and will
-   be resolved when the `architecture-review` skill lands.
-   **Note on infrastructure/deployment and documentation-only
-   layers:** these layers are detected but have no dedicated
-   implementation skill in the registry. The orchestrator
-   should fall back to `backend-implementation` (the closest
-   match) and flag the routing in the report (Finding 3, B1
-   exercise; Finding 6, B1 exercise).
-
-   If the task is `mixed` and the layers are roughly equal, the
-   default is to **sequence** them: one orchestrator → one
-   implementation skill → handoff packet → next orchestrator call
-   for the next layer. This is intentional. A single
-   implementation skill that tries to do two layers at once is
-   the failure mode this skill is meant to prevent.
-
-6. **Document risks and approval gates.** Use the shared
-   [`approval-gate.md`](../../templates/approval-gate.md) template
-   for any blocker-level finding. Cross-link to the
-   [`risk-register.md`](../../templates/risk-register.md) for
-   cross-skill risk aggregation.
-
-7. **Hand off.** Produce a
-   [`handoff-packet`](../handoff-packet/SKILL.md) to the selected
-   skill. The packet's `Required next action` is "implement per
-   routing report" and links to the routing report and discovery
-   artifact.
+For the full stop-condition list, see
+[`references/stop-and-validation.md`](references/stop-and-validation.md).
 
 ## Allowed Actions
 
@@ -202,44 +145,9 @@ Before routing:
 - Write the routing report and handoff packet.
 - Update `task.md` / `state.json` for the routed task.
 
-## Forbidden Actions
-
-- **Do not modify application code.** The orchestrator's only
-  output is a routing report and handoff packet; it never edits
-  source files.
-- **Do not generate tests.** Tests are written by
-  `test-generation` or by the implementation skill, scoped to its
-  layer.
-- **Do not implement features.** The orchestrator routes; the
-  implementation skills implement.
-- **Do not run destructive commands.** No installers, no `rm`, no
-  schema changes, no `git push --force`, no deploys.
-- **Do not route high-risk tasks directly to implementation
-  without a review gate.** Migrations, dependency changes, and
-  security-sensitive work must go through
-  `database-migration-safety`, `dependency-change-review`, or
-  `security-review` first.
-- **Do not invent repo facts.** Routing decisions must cite
-  files and modules from the discovery artifact.
-- **Do not approve the task on behalf of any review skill.** The
-  orchestrator can route to a review skill; it cannot stand in for
-  one.
-
-## Stop Conditions
-
-Halt the workflow and surface a blocker (via
-`task-state-management`) when:
-
-- Acceptance criteria are unclear or contradictory.
-- The task requires a destructive migration and no review has been
-  scheduled.
-- The task requires a new dependency / package-manager / build-tool
-  change and no review has been scheduled.
-- The task crosses multiple modules with unclear ownership and the
-  module owners cannot be inferred from the discovery artifact.
-- The task requires production credentials or deployment access.
-- The discovery artifact contradicts the task description in a way
-  that affects routing.
+For the full list of forbidden actions and the handoff contract
+the receiving skill may rely on, see
+[`references/handoff-and-forbidden.md`](references/handoff-and-forbidden.md).
 
 ## Outputs
 
@@ -252,28 +160,7 @@ Halt the workflow and surface a blocker (via
 - **State transition** in `state.json` from `backlog` / `ready` to
   the appropriate state, with the routing report path recorded.
 
-## Handoff Contract
-
-Fields the receiving skill may rely on:
-
-- `routing_report_path` — absolute path to the routing report
-- `selected_skill` — exactly one of
-  `backend-implementation | frontend-implementation | integration-implementation | database-migration-safety | dependency-change-review | architecture-review`
-- `selected_skill_rationale` — why this skill
-- `target_modules` — list of `path:reason` for the modules to change
-- `preflight_gates_required` — list of review skills that must run
-  before implementation
-- `discovery_artifact_path` — absolute path to the repo discovery
-- `acceptance_criteria` — the testable conditions
-
-Fields the receiving skill must not rely on:
-
-- "approved by <review skill>" unless the review's output is
-  attached to the packet.
-- "no security implications" — the orchestrator does not make
-  security claims; security is asserted only by `security-review`.
-
-## Validation
+## Validation (summary)
 
 Routing is "validated" when:
 
@@ -289,6 +176,9 @@ Routing is "validated" when:
 The orchestrator itself runs no shell commands. Validation is
 performed by the receiving skill (typically
 `validation-runner` at the end of the implementation cycle).
+
+For the full validation rules, see
+[`references/stop-and-validation.md`](references/stop-and-validation.md).
 
 ## Completion Criteria
 
@@ -311,8 +201,12 @@ performed by the receiving skill (typically
 - [`database-migration-safety`](../database-migration-safety/SKILL.md)
 - [`dependency-change-review`](../dependency-change-review/SKILL.md)
 - [`security-review`](../security-review/SKILL.md)
-- Shared
-  [`approval-gate`](../../templates/approval-gate.md) and
+- Long-form workflow: [`references/workflow.md`](references/workflow.md)
+- Long-form stop conditions / validation:
+  [`references/stop-and-validation.md`](references/stop-and-validation.md)
+- Long-form handoff contract / forbidden actions:
+  [`references/handoff-and-forbidden.md`](references/handoff-and-forbidden.md)
+- Shared [`approval-gate`](../../templates/approval-gate.md) and
   [`risk-register`](../../templates/risk-register.md) templates.
 
 ## Maturity
