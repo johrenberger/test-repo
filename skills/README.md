@@ -107,7 +107,7 @@ touches code or task state should be familiar with these.
 
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
-| [`repo-discovery`](repo-discovery/SKILL.md) | Detect repo stack, layout, and test commands from filesystem evidence | `usable` |
+| [`repo-discovery`](repo-discovery/SKILL.md) | Detect repo stack, layout, and test commands from filesystem evidence | `validated` |
 | [`task-state-management`](task-state-management/SKILL.md) | Per-task workspace layout, allowed states, state-transition rules | `validated` |
 | [`handoff-packet`](handoff-packet/SKILL.md) | Standardize agent-to-agent task transfers with a 14-field packet (plus a task-spec-packet variant for BDD-style spec handoffs) | `validated` |
 | [`validation-runner`](validation-runner/SKILL.md) | Run safe, evidence-discovered local validation commands and report | `validated` |
@@ -129,7 +129,7 @@ first; the orchestrator decides the right narrower skill.
 | [`backend-implementation`](backend-implementation/SKILL.md) | Implement **backend / server-side** behavior (API, service, persistence, auth) | `usable` |
 | [`frontend-implementation`](frontend-implementation/SKILL.md) | Implement **frontend / client-side** behavior (UI, state, forms, routing) | `usable` |
 | [`integration-implementation`](integration-implementation/SKILL.md) | Implement **cross-system integration** behavior (API clients, webhooks, queues, file batch) | `usable` |
-| [`test-gap-analysis`](test-gap-analysis/SKILL.md) | Risk-weighted test gap analysis without writing tests | `usable` |
+| [`test-gap-analysis`](test-gap-analysis/SKILL.md) | Risk-weighted test gap analysis without writing tests | `validated` |
 | [`test-generation`](test-generation/SKILL.md) | Generate or update tests in the existing framework and style | `validated` |
 
 ### When to use the orchestrator
@@ -196,7 +196,7 @@ documentation aligned with the actual repo. They are
 
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
-| [`architecture-decision`](architecture-decision/SKILL.md) | Create evidence-based ADRs and options analyses for material technical decisions | `usable` |
+| [`architecture-decision`](architecture-decision/SKILL.md) | Create evidence-based ADRs and options analyses for material technical decisions | `validated` |
 | [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `validated` |
 | [`documentation-update`](documentation-update/SKILL.md) | Update source-controlled docs based on code, API, architecture, and config changes | `validated` |
 
