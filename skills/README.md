@@ -198,7 +198,7 @@ documentation aligned with the actual repo. They are
 | --- | --- | --- |
 | [`architecture-decision`](architecture-decision/SKILL.md) | Create evidence-based ADRs and options analyses for material technical decisions | `usable` |
 | [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `draft` |
-| [`documentation-update`](documentation-update/SKILL.md) | Update source-controlled docs based on code, API, architecture, and config changes | `draft` |
+| [`documentation-update`](documentation-update/SKILL.md) | Update source-controlled docs based on code, API, architecture, and config changes | `validated` |
 
 ## Release and Operations Skills
 
