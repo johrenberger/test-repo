@@ -164,8 +164,12 @@ ranked findings reports.
 | [`security-review`](security-review/SKILL.md) | Code / config security review with OWASP, secrets, and authz checklists | `validated` |
 | [`dependency-change-review`](dependency-change-review/SKILL.md) | Review of dependency, build, and lockfile changes | `validated` |
 | [`database-migration-safety`](database-migration-safety/SKILL.md) | Schema and migration safety review with expand-and-contract guidance | `draft` |
-| [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture; may recommend an ADR | `draft` |
-| [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, health, alerts, runbooks; recommends changes via handoff | `draft` |
+| [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `draft` |
+| [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `draft` |
+
+> The Reviewer table is an index. Full descriptions for
+> `database-migration-safety`, `architecture-review`, and
+> `observability-review` are in their category tables below.
 
 ## Architecture and Documentation Skills
 
