@@ -238,7 +238,7 @@ infrastructure. Those actions are operator-only.
 | [`release-readiness`](release-readiness/SKILL.md) | Aggregate evidence into a go / no-go readiness report; never deploys | `validated` |
 | [`incident-triage`](incident-triage/SKILL.md) | Structure incident investigation; never executes production changes | `validated` |
 | [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `validated` |
-| [`runbook-authoring`](runbook-authoring/SKILL.md) | Create / update operational runbooks from validated evidence; gates destructive steps | `draft` |
+| [`runbook-authoring`](runbook-authoring/SKILL.md) | Create / update operational runbooks from validated evidence; gates destructive steps | `validated` |
 
 ## Future Skills
 
