@@ -115,6 +115,29 @@ Required fields, in order. Every packet must populate all 14:
   target writes an acceptance note (an empty `## Acceptance` section is
   not enough).
 
+## Related artifacts (task-spec-packet template)
+
+This skill also defines a second packet shape for **task spec
+handoffs** — where one agent hands a complete task spec (with BDD
+features and required commands) to a building agent. The
+task-spec-packet template is at `templates/task-spec-packet.md` and
+ships with a linter at `lint_task_spec.py` that enforces 5
+**mandatory pinned values** (backend port, frontend port, python
+binary, DOM env, test runner versions). These were added after the
+2026-06-12 BDD-app cold-consumption test surfaced 5 gaps where a
+fresh sub-agent had to make decisions the packet didn't pin. After
+the template + lint were added, a 2026-06-13 cold-consumption test
+on a different app (CSV-stats) hit **0 gaps** — the fix worked.
+
+Lint usage:
+```bash
+python3 templates/lint_task_spec.py <packet.md>            # strict
+python3 templates/lint_task_spec.py --allow-placeholders \
+    templates/task-spec-packet.md                          # lint the template
+```
+
+The lint tests live at `templates/tests/test_lint_task_spec.py`.
+
 ## Completion Criteria
 
 - Packet file written, summary line appended, audit trail intact.
