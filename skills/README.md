@@ -125,10 +125,10 @@ first; the orchestrator decides the right narrower skill.
 
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
-| [`implementation-orchestrator`](implementation-orchestrator/SKILL.md) | Route implementation work to the correct narrower skill; never edits code | `usable` |
+| [`implementation-orchestrator`](implementation-orchestrator/SKILL.md) | Route implementation work to the correct narrower skill; never edits code | `validated` |
 | [`backend-implementation`](backend-implementation/SKILL.md) | Implement **backend / server-side** behavior (API, service, persistence, auth) | `usable` |
-| [`frontend-implementation`](frontend-implementation/SKILL.md) | Implement **frontend / client-side** behavior (UI, state, forms, routing) | `draft` |
-| [`integration-implementation`](integration-implementation/SKILL.md) | Implement **cross-system integration** behavior (API clients, webhooks, queues, file batch) | `draft` |
+| [`frontend-implementation`](frontend-implementation/SKILL.md) | Implement **frontend / client-side** behavior (UI, state, forms, routing) | `usable` |
+| [`integration-implementation`](integration-implementation/SKILL.md) | Implement **cross-system integration** behavior (API clients, webhooks, queues, file batch) | `usable` |
 | [`test-gap-analysis`](test-gap-analysis/SKILL.md) | Risk-weighted test gap analysis without writing tests | `usable` |
 | [`test-generation`](test-generation/SKILL.md) | Generate or update tests in the existing framework and style | `validated` |
 
@@ -164,8 +164,8 @@ ranked findings reports.
 | [`security-review`](security-review/SKILL.md) | Code / config security review with OWASP, secrets, and authz checklists | `validated` |
 | [`dependency-change-review`](dependency-change-review/SKILL.md) | Review of dependency, build, and lockfile changes | `validated` |
 | [`database-migration-safety`](database-migration-safety/SKILL.md) | Schema and migration safety review with expand-and-contract guidance | `validated` |
-| [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `draft` |
-| [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `draft` |
+| [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `validated` |
+| [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `validated` |
 
 > The Reviewer table is an index. Full descriptions for
 > `database-migration-safety`, `architecture-review`, and
@@ -197,8 +197,8 @@ documentation aligned with the actual repo. They are
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
 | [`architecture-decision`](architecture-decision/SKILL.md) | Create evidence-based ADRs and options analyses for material technical decisions | `usable` |
-| [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `draft` |
-| [`documentation-update`](documentation-update/SKILL.md) | Update source-controlled docs based on code, API, architecture, and config changes | `draft` |
+| [`architecture-review`](architecture-review/SKILL.md) | Read-only audit of proposed / implemented architecture with ranked findings | `validated` |
+| [`documentation-update`](documentation-update/SKILL.md) | Update source-controlled docs based on code, API, architecture, and config changes | `validated` |
 
 ## Release and Operations Skills
 
@@ -236,9 +236,9 @@ infrastructure. Those actions are operator-only.
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
 | [`release-readiness`](release-readiness/SKILL.md) | Aggregate evidence into a go / no-go readiness report; never deploys | `validated` |
-| [`incident-triage`](incident-triage/SKILL.md) | Structure incident investigation; never executes production changes | `draft` |
-| [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `draft` |
-| [`runbook-authoring`](runbook-authoring/SKILL.md) | Create / update operational runbooks from validated evidence; gates destructive steps | `draft` |
+| [`incident-triage`](incident-triage/SKILL.md) | Structure incident investigation; never executes production changes | `validated` |
+| [`observability-review`](observability-review/SKILL.md) | Audit logging, metrics, tracing, alerts, runbooks; never modifies monitoring systems | `validated` |
+| [`runbook-authoring`](runbook-authoring/SKILL.md) | Create / update operational runbooks from validated evidence; gates destructive steps | `validated` |
 
 ## Future Skills
 
