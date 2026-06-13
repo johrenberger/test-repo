@@ -160,7 +160,7 @@ ranked findings reports.
 
 | Skill | Purpose | Maturity |
 | --- | --- | --- |
-| [`code-change-review`](code-change-review/SKILL.md) | Read-only review of local code changes with severity-ranked findings | `draft` |
+| [`code-change-review`](code-change-review/SKILL.md) | Read-only review of local code changes with severity-ranked findings | `usable` |
 | [`security-review`](security-review/SKILL.md) | Code / config security review with OWASP, secrets, and authz checklists | `draft` |
 | [`dependency-change-review`](dependency-change-review/SKILL.md) | Review of dependency, build, and lockfile changes | `draft` |
 | [`database-migration-safety`](database-migration-safety/SKILL.md) | Schema and migration safety review with expand-and-contract guidance | `draft` |
