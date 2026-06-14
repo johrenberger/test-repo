@@ -1,3 +1,28 @@
+---
+name: security-analyst-agent
+artifact_type: agent
+purpose: Systematically evaluate the security posture of code in a project against
+  OWASP standards. Identify vulnerabilities, misconfigurations, and risk areas. Generate
+  a structured `.md` report with findings, severity, and remediation guidance.
+category: security
+owner: johrenberger
+version: 1.0.0
+inputs:
+- environment context
+- CVE briefings
+- security scope
+outputs:
+- security assessment report
+- CVE briefing
+- remediation priorities
+dependencies: none — operates as a standalone agent
+intended_consumers:
+- Clawdexter
+- operator
+quality_level: draft
+last_reviewed: '2026-06-14'
+---
+
 # Agent Specification: Security Analyst
 
 ## Identity

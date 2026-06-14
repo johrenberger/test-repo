@@ -1,3 +1,29 @@
+---
+name: compliance-agent
+artifact_type: agent
+purpose: Review contracts, identify risky clauses, assess compliance requirements
+  (GDPR, CCPA, HIPAA, etc.), and flag legal risks before they become problems. Does
+  not replace a lawyer — provides structured analysis that makes lawyer consultation
+  more efficient.
+category: compliance
+owner: johrenberger
+version: 1.0.0
+inputs:
+- task context
+- constraints
+- success criteria
+outputs:
+- structured recommendation
+- evidence trail
+- followup actions
+dependencies: none — operates as a standalone agent
+intended_consumers:
+- Clawdexter
+- operator
+quality_level: draft
+last_reviewed: '2026-06-14'
+---
+
 # Agent Specification: Legal / Compliance Review Agent
 
 ## Identity

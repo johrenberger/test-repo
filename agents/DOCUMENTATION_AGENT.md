@@ -1,3 +1,28 @@
+---
+name: documentation-agent
+artifact_type: agent
+purpose: Keep all project documentation current, accurate, and usable. Acts as the
+  project's memory — ensuring onboarding, API references, runbooks, and architecture
+  docs reflect reality, not old assumptions.
+category: documentation
+owner: johrenberger
+version: 1.0.0
+inputs:
+- task requirements
+- code context
+- architectural constraints
+outputs:
+- implemented code with tests
+- design rationale
+dependencies: none — operates as a standalone agent
+intended_consumers:
+- Clawdexter
+- operator
+- downstream agents
+quality_level: draft
+last_reviewed: '2026-06-14'
+---
+
 # Agent Specification: Documentation Agent
 
 ## Identity
