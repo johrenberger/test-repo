@@ -1,3 +1,29 @@
+---
+name: project-coordinator-agent
+artifact_type: agent
+purpose: Orchestrate the multi-agent pipeline — track sprint progress across agents,
+  coordinate handoffs, maintain the overall project timeline, and ensure nothing gets
+  lost between steps.
+category: project
+owner: johrenberger
+version: 1.0.0
+inputs:
+- task context
+- constraints
+- success criteria
+outputs:
+- structured recommendation
+- evidence trail
+- followup actions
+dependencies: none — operates as a standalone agent
+intended_consumers:
+- Clawdexter
+- operator
+- downstream agents
+quality_level: draft
+last_reviewed: '2026-06-14'
+---
+
 # Agent Specification: Project Coordinator
 
 ## Identity

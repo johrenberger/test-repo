@@ -1,3 +1,28 @@
+---
+name: monitoring-agent
+artifact_type: agent
+purpose: Provide real-time visibility into whether what we build actually works in
+  production. Detects anomalies, surfaces degradation, aggregates logs, and triggers
+  alerts before users notice. Acts as the project's nervous system.
+category: monitoring
+owner: johrenberger
+version: 1.0.0
+inputs:
+- task requirements
+- code context
+- architectural constraints
+outputs:
+- implemented code with tests
+- design rationale
+dependencies: none — operates as a standalone agent
+intended_consumers:
+- Clawdexter
+- operator
+- downstream agents
+quality_level: draft
+last_reviewed: '2026-06-14'
+---
+
 # Agent Specification: Monitoring / SRE Agent
 
 ## Identity

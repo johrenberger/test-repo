@@ -1,3 +1,28 @@
+---
+name: agent
+artifact_type: agent
+purpose: Execute hands-on penetration testing against deployed applications to identify
+  exploitable vulnerabilities that static analysis cannot detect. Generate structured
+  evidence-backed findings with proof-of-concept reproduction steps.
+category: operations
+owner: johrenberger
+version: 1.0.0
+inputs:
+- code under test
+- test requirements
+- test infrastructure
+outputs:
+- test plan
+- test cases
+- automation scripts
+dependencies: none — operates as a standalone agent
+intended_consumers:
+- Clawdexter
+- operator
+quality_level: draft
+last_reviewed: '2026-06-14'
+---
+
 # Agent Specification: Penetration Testing Agent
 
 ## Identity

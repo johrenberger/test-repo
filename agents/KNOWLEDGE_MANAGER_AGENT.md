@@ -1,3 +1,29 @@
+---
+name: knowledge-manager-agent
+artifact_type: agent
+purpose: Maintain the project's institutional memory — decisions made, lessons learned,
+  best practices accumulated. Prevent the same mistakes across projects and ensure
+  continuity when context is lost between sessions.
+category: knowledge
+owner: johrenberger
+version: 1.0.0
+inputs:
+- task context
+- constraints
+- success criteria
+outputs:
+- structured recommendation
+- evidence trail
+- followup actions
+dependencies: none — operates as a standalone agent
+intended_consumers:
+- Clawdexter
+- operator
+- downstream agents
+quality_level: draft
+last_reviewed: '2026-06-14'
+---
+
 # Agent Specification: Knowledge Manager
 
 ## Identity
