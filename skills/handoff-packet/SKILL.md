@@ -1,3 +1,20 @@
+---
+name: handoff-packet
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- executive-assistant-agent
+- project-coordinator-agent
+- communications-manager-agent
+purpose: Standardize agent-to-agent task transfers. A handoff packet is a single markdown
+  file that captures everything the receiving agent needs to continue work without
+  re-asking the sending agent.
+---
+
 # handoff-packet
 
 Standardize agent-to-agent task transfers. A handoff packet is a single

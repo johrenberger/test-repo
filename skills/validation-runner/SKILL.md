@@ -1,3 +1,22 @@
+---
+name: validation-runner
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- test-automation-agent
+- code-review-agent
+- data-analyst-agent
+- pen-testing-agent
+- software-engineer-agent
+purpose: Run safe, evidence-discovered local validation commands and produce a structured
+  report. Prefers targeted validation (lint, typecheck, focused tests) over full suite
+  execution.
+---
+
 # validation-runner
 
 Run safe, evidence-discovered local validation commands and produce a

@@ -20,8 +20,11 @@ intended_consumers:
 - operator
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- test-gap-analysis
+- test-generation
+- validation-runner
 ---
-
 # Agent Specification: Test Automation Engineer
 
 ## Identity

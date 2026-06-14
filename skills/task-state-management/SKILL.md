@@ -1,3 +1,21 @@
+---
+name: task-state-management
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- executive-assistant-agent
+- knowledge-manager-agent
+- product-manager-agent
+- project-coordinator-agent
+purpose: Define the per-task filesystem layout, the allowed task states, and the state-transition
+  rules. Provide a single source of truth for any agent that needs to record, advance,
+  or query task progress.
+---
+
 # task-state-management
 
 Define the per-task filesystem layout, the allowed task states, and the

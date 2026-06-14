@@ -1,3 +1,18 @@
+---
+name: architecture-decision
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- tech-lead-agent
+purpose: Create evidence-based architecture decisions and Architecture Decision Records
+  (ADRs) for material technical choices. The skill produces decision artifacts; it
+  does not implement code or alter the running architecture.
+---
+
 # architecture-decision
 
 Create evidence-based architecture decisions and Architecture

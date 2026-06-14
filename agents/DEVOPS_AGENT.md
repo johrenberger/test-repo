@@ -21,8 +21,11 @@ intended_consumers:
 - downstream agents
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- release-readiness
+- database-migration-safety
+- dependency-change-review
 ---
-
 # Agent Specification: DevOps / Infrastructure Engineer
 
 ## Identity

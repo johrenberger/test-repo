@@ -1,5 +1,5 @@
 ---
-name: compliance-agent
+name: legal-compliance-agent
 artifact_type: agent
 purpose: Review contracts, identify risky clauses, assess compliance requirements
   (GDPR, CCPA, HIPAA, etc.), and flag legal risks before they become problems. Does
@@ -22,8 +22,10 @@ intended_consumers:
 - operator
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- security-review
+- code-change-review
 ---
-
 # Agent Specification: Legal / Compliance Review Agent
 
 ## Identity

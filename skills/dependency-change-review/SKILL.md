@@ -1,3 +1,20 @@
+---
+name: dependency-change-review
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- cloud-security-agent
+- devops-agent
+- security-analyst-agent
+purpose: Read-only review of dependency, package manager, build file, and lockfile
+  changes. Produces a ranked findings report with explicit recommendation on whether
+  the change is acceptable.
+---
+
 # dependency-change-review
 
 Read-only review of dependency, package manager, build file, and

@@ -22,8 +22,11 @@ intended_consumers:
 - downstream agents
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- architecture-review
+- architecture-decision
+- code-change-review
 ---
-
 # Agent Specification: Architecture / Tech Lead Agent
 
 ## Identity

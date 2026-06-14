@@ -1,3 +1,19 @@
+---
+name: integration-implementation
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- software-engineer-agent
+purpose: Implement **cross-system integration** behavior safely. The skill produces
+  the smallest change that adds or modifies a boundary between this system and another
+  — through an API call, a message, a webhook, a file, or a shared contract — while
+  respecting retries, idempotency, error handling, and contr
+---
+
 # integration-implementation
 
 Implement **cross-system integration** behavior safely. The

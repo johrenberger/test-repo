@@ -1,3 +1,18 @@
+---
+name: database-migration-safety
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- devops-agent
+purpose: Read-only review of database schema, migration, and data-shape changes. Produces
+  a ranked findings report focused on safety, with explicit escalation for destructive
+  or irreversible changes.
+---
+
 # database-migration-safety
 
 Read-only review of database schema, migration, and data-shape

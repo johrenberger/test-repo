@@ -1,3 +1,20 @@
+---
+name: security-review
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- cloud-security-agent
+- legal-compliance-agent
+- pen-testing-agent
+- security-analyst-agent
+purpose: Application / code / config security review. Produces a ranked findings report
+  grounded in code evidence. Read-only by default — does not exploit, fuzz, or scan.
+---
+
 # security-review
 
 Application / code / config security review. Produces a ranked findings

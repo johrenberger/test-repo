@@ -1,3 +1,18 @@
+---
+name: repo-discovery
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- research-analyst-agent
+purpose: Identify the language, framework, build system, test setup, and risk zones
+  of a repository from filesystem evidence alone. Produces a deterministic discovery
+  report that downstream skills and agents can act on without re-scanning.
+---
+
 # repo-discovery
 
 Identify the language, framework, build system, test setup, and risk zones of

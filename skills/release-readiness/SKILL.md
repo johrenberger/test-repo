@@ -1,3 +1,19 @@
+---
+name: release-readiness
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- devops-agent
+- product-manager-agent
+purpose: Assess whether a change, branch, build, or project is ready for release or
+  handoff to deployment. The skill produces a go/no-go readiness report. **It never
+  deploys.** Deployment is a human / operator action; this skill only informs it.
+---
+
 # release-readiness
 
 Assess whether a change, branch, build, or project is ready

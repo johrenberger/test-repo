@@ -1,3 +1,20 @@
+---
+name: code-change-review
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- code-review-agent
+- tech-lead-agent
+- legal-compliance-agent
+purpose: Read-only review of local code changes — staged, unstaged, branch diffs,
+  or a specified set of files. Produces a ranked findings report without modifying
+  code.
+---
+
 # code-change-review
 
 Read-only review of local code changes — staged, unstaged, branch
