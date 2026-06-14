@@ -1,3 +1,19 @@
+---
+name: incident-triage
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- monitoring-agent
+purpose: Structure incident investigation and response without making unsafe production
+  changes. The skill is **read-only by default**; it produces a triage report, a timeline,
+  action items, and a handoff to the appropriate role. It does not deploy, rollback,
+  restart, scale, or otherwise mutate production.
+---
+
 # incident-triage
 
 Structure incident investigation and response without making

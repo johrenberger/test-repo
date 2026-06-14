@@ -22,8 +22,9 @@ intended_consumers:
 - downstream agents
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- observability-review
 ---
-
 # Agent Specification: Financial / Business Analyst
 
 ## Identity

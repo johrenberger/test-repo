@@ -1,3 +1,18 @@
+---
+name: test-generation
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- test-automation-agent
+purpose: Generate or update tests in the repository's existing test framework and
+  style. The skill fits the new tests into the existing test layout and naming conventions,
+  and runs targeted validation after writing.
+---
+
 # test-generation
 
 Generate or update tests in the repository's existing test framework and

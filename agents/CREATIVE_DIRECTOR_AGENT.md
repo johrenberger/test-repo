@@ -21,8 +21,9 @@ intended_consumers:
 - operator
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- documentation-update
 ---
-
 # Agent Specification: Creative Director
 
 ## Identity

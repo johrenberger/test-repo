@@ -1,3 +1,20 @@
+---
+name: architecture-review
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- code-review-agent
+- tech-lead-agent
+purpose: Review proposed or implemented architecture for correctness, simplicity,
+  scalability, security, maintainability, and operational fit. The skill is **read-only
+  by default**; it produces a findings report and may recommend a formal decision
+  via [`architecture-decision`](../architecture-decision/SKILL.
+---
+
 # architecture-review
 
 Review proposed or implemented architecture for correctness,

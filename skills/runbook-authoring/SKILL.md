@@ -1,3 +1,18 @@
+---
+name: runbook-authoring
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- documentation-agent
+purpose: Create or update operational runbooks and troubleshooting guides from validated
+  system evidence. The skill produces operational docs that an on-call responder can
+  follow under pressure.
+---
+
 # runbook-authoring
 
 Create or update operational runbooks and troubleshooting

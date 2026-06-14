@@ -1,3 +1,22 @@
+---
+name: documentation-update
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- documentation-agent
+- knowledge-manager-agent
+- research-analyst-agent
+- creative-director-agent
+- communications-manager-agent
+purpose: Identify and update documentation impacted by code, API, architecture, configuration,
+  deployment, or workflow changes. The skill is **evidence-driven** — it documents
+  what the repo actually does, not what someone wishes it did.
+---
+
 # documentation-update
 
 Identify and update documentation impacted by code, API,

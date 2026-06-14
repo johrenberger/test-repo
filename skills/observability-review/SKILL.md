@@ -1,3 +1,21 @@
+---
+name: observability-review
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- data-analyst-agent
+- monitoring-agent
+- financial-analyst-agent
+purpose: Review whether a service or change has adequate logging, metrics, tracing,
+  health checks, and alert / runbook support. The skill is **read-only by default**;
+  it produces an observability review report and recommendations. It does not modify
+  production monitoring systems.
+---
+
 # observability-review
 
 Review whether a service or change has adequate logging,

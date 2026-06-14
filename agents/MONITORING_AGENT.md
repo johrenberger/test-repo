@@ -21,8 +21,10 @@ intended_consumers:
 - downstream agents
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- observability-review
+- incident-triage
 ---
-
 # Agent Specification: Monitoring / SRE Agent
 
 ## Identity

@@ -1,5 +1,5 @@
 ---
-name: agent
+name: pen-testing-agent
 artifact_type: agent
 purpose: Execute hands-on penetration testing against deployed applications to identify
   exploitable vulnerabilities that static analysis cannot detect. Generate structured
@@ -21,8 +21,10 @@ intended_consumers:
 - operator
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- security-review
+- validation-runner
 ---
-
 # Agent Specification: Penetration Testing Agent
 
 ## Identity

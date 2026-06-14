@@ -20,8 +20,10 @@ intended_consumers:
 - operator
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- repo-discovery
+- documentation-update
 ---
-
 # Agent Specification: Research Analyst
 
 ## Identity

@@ -20,8 +20,13 @@ intended_consumers:
 - operator
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- implementation-orchestrator
+- backend-implementation
+- frontend-implementation
+- integration-implementation
+- validation-runner
 ---
-
 # Agent Specification: Software Engineering Partner
 
 ## Identity

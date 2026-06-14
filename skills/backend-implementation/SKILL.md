@@ -1,3 +1,18 @@
+---
+name: backend-implementation
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- software-engineer-agent
+purpose: Implement **backend / server-side** behavior safely. The skill produces the
+  smallest backend change that satisfies the acceptance criteria and fits the existing
+  codebase.
+---
+
 # backend-implementation
 
 Implement **backend / server-side** behavior safely. The skill

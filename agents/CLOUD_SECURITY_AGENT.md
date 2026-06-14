@@ -1,5 +1,5 @@
 ---
-name: Cipher
+name: cloud-security-agent
 artifact_type: agent
 purpose: Evaluate the security posture of the cloud environment (Hostinger VPS, Linux
   Docker container) that Clawdexter runs in. Continuously check latest CVE risks before
@@ -23,8 +23,10 @@ intended_consumers:
 - operator
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- security-review
+- dependency-change-review
 ---
-
 # Agent Specification: Cloud Environment Security Specialist
 
 ## Identity

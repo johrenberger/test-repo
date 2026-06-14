@@ -1,3 +1,20 @@
+---
+name: implementation-orchestrator
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- project-coordinator-agent
+- software-engineer-agent
+purpose: Route implementation work to the correct narrower implementation skill. The
+  orchestrator does **not** implement code — it classifies the task, identifies the
+  owning module, and dispatches to one of `backend-implementation`, `frontend-implementation`,
+  `integration-implementation`, or to a review skil
+---
+
 # implementation-orchestrator
 
 Route implementation work to the correct narrower implementation

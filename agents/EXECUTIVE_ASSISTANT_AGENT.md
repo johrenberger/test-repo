@@ -22,8 +22,10 @@ intended_consumers:
 - downstream agents
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- task-state-management
+- handoff-packet
 ---
-
 # Agent Specification: Executive Assistant
 
 ## Identity

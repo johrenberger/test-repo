@@ -1,3 +1,17 @@
+---
+name: test-gap-analysis
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- test-automation-agent
+purpose: Analyze the existing test surface of a repository and produce a risk-weighted
+  list of test gaps — without writing tests or modifying code.
+---
+
 # test-gap-analysis
 
 Analyze the existing test surface of a repository and produce a

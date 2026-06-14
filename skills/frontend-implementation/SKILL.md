@@ -1,3 +1,18 @@
+---
+name: frontend-implementation
+artifact_type: skill
+version: 1.0.0
+owner: johrenberger
+category: operations
+quality_level: usable
+last_reviewed: '2026-06-14'
+used_by_agents:
+- software-engineer-agent
+purpose: Implement **frontend / client-side** behavior safely using the existing project
+  conventions. The skill produces the smallest frontend change that satisfies the
+  acceptance criteria and fits the existing codebase.
+---
+
 # frontend-implementation
 
 Implement **frontend / client-side** behavior safely using the

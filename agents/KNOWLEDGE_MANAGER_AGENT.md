@@ -22,8 +22,10 @@ intended_consumers:
 - downstream agents
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- documentation-update
+- task-state-management
 ---
-
 # Agent Specification: Knowledge Manager
 
 ## Identity

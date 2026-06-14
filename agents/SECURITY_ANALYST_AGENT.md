@@ -21,8 +21,10 @@ intended_consumers:
 - operator
 quality_level: draft
 last_reviewed: '2026-06-14'
+uses_skills:
+- security-review
+- dependency-change-review
 ---
-
 # Agent Specification: Security Analyst
 
 ## Identity
